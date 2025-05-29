@@ -11,7 +11,7 @@ base.archivesName = project.properties["archives_base_name"] as String
 
 // Releases are in DateTime format to continue the tradition
 // Snapshots are simply "1.0.0-SNAPSHOT" to make it easy to get the latest version
-version = if (project.hasProperty("version_snapshot")) "1.0.0-SNAPSHOT"
+version = if (!project.hasProperty("version_release")) "1.0.0-SNAPSHOT"
 else SimpleDateFormat("yyyyMMddHHmm").format(Date())
 
 repositories {
@@ -19,7 +19,30 @@ repositories {
     maven("https://maven.legacyfabric.net")
 }
 
+fun SourceSetContainer.extending(sourceSet: SourceSet): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
+    this.creating {
+        compileClasspath += sourceSet.compileClasspath
+        runtimeClasspath += sourceSet.runtimeClasspath
+        compileClasspath += sourceSet.output
+        runtimeClasspath += sourceSet.output
+        tasks.register(this@creating.jarTaskName, Jar::class) {
+            group = "build"
+            archiveBaseName = "${base.archivesName.get()}-${this@creating.name}"
+            from(this@creating.output) { include("**/*.class") }
+        }
+        tasks.register(this@creating.sourcesJarTaskName, Jar::class) {
+            group = "build"
+            archiveBaseName = "${base.archivesName.get()}-${this@creating.name}"
+            archiveClassifier = "sources"
+            from(this@creating.allSource) { include("**/*.java") }
+        }
+        tasks.jar.configure { dependsOn(this@creating.jarTaskName) }
+        tasks.build.configure { dependsOn(this@creating.sourcesJarTaskName) }
+    }
+
 val main: SourceSet by sourceSets.getting
+val test: SourceSet by sourceSets.getting
+val javaSoundPlugin: SourceSet by sourceSets.extending(main)
 
 dependencies {
     implementation(libs.bundles.lwjgl)
@@ -46,5 +69,4 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
     withSourcesJar()
-    withJavadocJar()
 }

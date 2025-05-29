@@ -47,7 +47,8 @@ import javax.sound.midi.Synthesizer;
 
 /**
  * The MidiChannel class provides an interface for playing MIDI files, using
- * the JavaSound API.  For more information about the JavaSound API, visit
+ * the JavaSound API.
+ * For more information about the JavaSound API, visit
  * <a href="https://web.archive.org/web/20100628094942/https://java.sun.com/products/java-media/sound/">sun.com</a>
  */
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
