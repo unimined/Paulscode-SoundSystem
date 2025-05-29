@@ -1,11 +1,16 @@
 # Paulscode SoundSystem
 
-This is a checkin of code from [http://www.paulscode.com/forum/index.php?topic=4.0](http://www.paulscode.com/forum/index.php?topic=4.0).
+This is a check-in of code from [paulscode.com][SoundSystem thread].
 
-Originally authored by [@paulscode](https://github.com/paulscode). Find him at [www.paulscode.com](http://www.paulscode.com/).
+Originally authored by [Paul Lamb].
+Find him at [paulscode.com].
 
-The [license](./soundsystem/SoundSystem%20License.txt) allows us to do this.
+We are doing this to fix outstanding bugs within the library
+and to update it for use with Java 9 and beyond.
 
-We are doing this to allow fixing of outstanding bugs within the library and updating for use with Java 9 and beyond.
+Builds are available at [wagyourtail.xyz][WagYourMaven].
 
-Builds are available at files.minecraftforge.net.
+[SoundSystem thread]:https://web.archive.org/web/20181207143744/http://www.paulscode.com/forum/index.php?topic=4.0
+[Paul Lamb]:https://github.com/paulscode
+[paulscode.com]:https://www.paulscode.com
+[WagYourMaven]:https://maven.wagyourtail.xyz

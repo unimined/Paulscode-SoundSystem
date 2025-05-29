@@ -1,2 +1,24 @@
+.consulo/
+.idea/
+.idea_modules/
+.vscode/
+.vs/
 
-/.idea/
+.gradle/
+.mtj.tmp/
+build/
+out/
+run/
+
+*.class
+*.log
+*.ctxt
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+*.iws
