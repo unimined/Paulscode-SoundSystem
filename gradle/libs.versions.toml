@@ -13,5 +13,7 @@ joal = { module = "org.jogamp.joal:joal", version.ref = "joal" }
 
 jogg_all = { module = "de.jarnbjo:j-ogg-all", version = "1.0.0" }
 
+jorbis = { module = "org.jcraft:jorbis", version = "0.0.17" }
+
 [bundles]
 lwjgl = ["lwjgl_platform", "lwjgl_util_applet", "lwjgl_base", "lwjgl_util", "lwjgl_parent"]

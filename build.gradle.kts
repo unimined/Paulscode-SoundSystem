@@ -69,6 +69,11 @@ val wavPlugin: SourceSet by sourceSets.extending(main)
  */
 val joggPlugin: SourceSet by sourceSets.extending(main)
 
+/**
+ * JOrbis-based OGG codec
+ */
+val jOrbisPlugin: SourceSet by sourceSets.extending(main)
+
 dependencies {
     val lwjglImplementation: Configuration = configurations.named(lwjgl2Plugin.implementationConfigurationName).get()
     lwjglImplementation(libs.bundles.lwjgl)
@@ -78,6 +83,9 @@ dependencies {
 
     val joggImplementation: Configuration = configurations.named(joggPlugin.implementationConfigurationName).get()
     joggImplementation(libs.jogg.all)
+
+    val jOrbisImplementation: Configuration = configurations.named(jOrbisPlugin.implementationConfigurationName).get()
+    jOrbisImplementation(libs.jorbis)
 }
 
 publishing {
