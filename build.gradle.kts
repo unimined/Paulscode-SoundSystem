@@ -17,6 +17,7 @@ else SimpleDateFormat("yyyyMMddHHmm").format(Date())
 repositories {
     mavenCentral()
     maven("https://maven.legacyfabric.net")
+    maven("https://jogamp.org/deployment/maven")
 }
 
 fun SourceSetContainer.extending(sourceSet: SourceSet): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
@@ -42,12 +43,28 @@ fun SourceSetContainer.extending(sourceSet: SourceSet): NamedDomainObjectContain
 
 val main: SourceSet by sourceSets.getting
 val test: SourceSet by sourceSets.getting
+
+/**
+ * Java's built-in audio library
+ */
 val javaSoundPlugin: SourceSet by sourceSets.extending(main)
-val lwjglOpenALPlugin: SourceSet by sourceSets.extending(main)
+
+/**
+ * LWJGL 2's OpenAL bindings
+ */
+val lwjgl2Plugin: SourceSet by sourceSets.extending(main)
+
+/**
+ * JogAmp's OpenAL bindings
+ */
+val jogAmpPlugin: SourceSet by sourceSets.extending(main)
 
 dependencies {
-    val lwjglImplementation: Configuration = configurations.named(lwjglOpenALPlugin.implementationConfigurationName).get()
+    val lwjglImplementation: Configuration = configurations.named(lwjgl2Plugin.implementationConfigurationName).get()
     lwjglImplementation(libs.bundles.lwjgl)
+
+    val joalImplementation: Configuration = configurations.named(jogAmpPlugin.implementationConfigurationName).get()
+    joalImplementation(libs.joal)
 }
 
 publishing {

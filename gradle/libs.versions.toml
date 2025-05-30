@@ -1,5 +1,6 @@
 [versions]
 lwjgl = "2.9.4+legacyfabric.10"
+joal = "2.5.0"
 
 [libraries]
 lwjgl_platform = { module = "org.lwjgl.lwjgl:lwjgl-platform", version.ref = "lwjgl" }
@@ -7,6 +8,8 @@ lwjgl_util_applet = { module = "org.lwjgl.lwjgl:lwjgl_util_applet", version.ref 
 lwjgl_base = { module = "org.lwjgl.lwjgl:lwjgl", version.ref = "lwjgl" }
 lwjgl_util = { module = "org.lwjgl.lwjgl:lwjgl_util", version.ref = "lwjgl" }
 lwjgl_parent = { module = "org.lwjgl.lwjgl:parent", version.ref = "lwjgl" }
+
+joal = { module = "org.jogamp.joal:joal", version.ref = "joal" }
 
 [bundles]
 lwjgl = ["lwjgl_platform", "lwjgl_util_applet", "lwjgl_base", "lwjgl_util", "lwjgl_parent"]
