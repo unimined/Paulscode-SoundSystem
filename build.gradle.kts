@@ -45,6 +45,11 @@ val main: SourceSet by sourceSets.getting
 val test: SourceSet by sourceSets.getting
 
 /**
+ * SoundSystem loader with example XML
+ */
+val utils: SourceSet by sourceSets.extending(main)
+
+/**
  * Java's built-in audio library
  */
 val javaSoundPlugin: SourceSet by sourceSets.extending(main)
