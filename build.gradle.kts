@@ -43,9 +43,11 @@ fun SourceSetContainer.extending(sourceSet: SourceSet): NamedDomainObjectContain
 val main: SourceSet by sourceSets.getting
 val test: SourceSet by sourceSets.getting
 val javaSoundPlugin: SourceSet by sourceSets.extending(main)
+val lwjglOpenALPlugin: SourceSet by sourceSets.extending(main)
 
 dependencies {
-    implementation(libs.bundles.lwjgl)
+    val lwjglImplementation: Configuration = configurations.named(lwjglOpenALPlugin.implementationConfigurationName).get()
+    lwjglImplementation(libs.bundles.lwjgl)
 }
 
 publishing {
