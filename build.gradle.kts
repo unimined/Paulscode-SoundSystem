@@ -74,6 +74,11 @@ val joggPlugin: SourceSet by sourceSets.extending(main)
  */
 val jOrbisPlugin: SourceSet by sourceSets.extending(main)
 
+/**
+ * IBXM codec
+ */
+val ibxmPlugin: SourceSet by sourceSets.extending(main)
+
 dependencies {
     val lwjglImplementation: Configuration = configurations.named(lwjgl2Plugin.implementationConfigurationName).get()
     lwjglImplementation(libs.bundles.lwjgl)
