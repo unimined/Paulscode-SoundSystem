@@ -64,12 +64,20 @@ val jogAmpPlugin: SourceSet by sourceSets.extending(main)
  */
 val wavPlugin: SourceSet by sourceSets.extending(main)
 
+/**
+ * J-OGG-based OGG codec
+ */
+val joggPlugin: SourceSet by sourceSets.extending(main)
+
 dependencies {
     val lwjglImplementation: Configuration = configurations.named(lwjgl2Plugin.implementationConfigurationName).get()
     lwjglImplementation(libs.bundles.lwjgl)
 
     val joalImplementation: Configuration = configurations.named(jogAmpPlugin.implementationConfigurationName).get()
     joalImplementation(libs.joal)
+
+    val joggImplementation: Configuration = configurations.named(joggPlugin.implementationConfigurationName).get()
+    joggImplementation(libs.jogg.all)
 }
 
 publishing {

@@ -11,5 +11,7 @@ lwjgl_parent = { module = "org.lwjgl.lwjgl:parent", version.ref = "lwjgl" }
 
 joal = { module = "org.jogamp.joal:joal", version.ref = "joal" }
 
+jogg_all = { module = "de.jarnbjo:j-ogg-all", version = "1.0.0" }
+
 [bundles]
 lwjgl = ["lwjgl_platform", "lwjgl_util_applet", "lwjgl_base", "lwjgl_util", "lwjgl_parent"]
