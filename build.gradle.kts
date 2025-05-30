@@ -34,12 +34,16 @@ fun SourceSet.extendsFrom(sourceSet: SourceSet) {
  * registers a jar task for the source set,
  * and invokes the additionally supplied configuration to the created source set
  */
-fun SourceSetContainer.extending(vararg sourceSets: SourceSet, configuration: SourceSet.() -> Unit = {}): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
+fun SourceSetContainer.extending(
+    name: String,
+    vararg sourceSets: SourceSet,
+    configuration: SourceSet.() -> Unit = {}
+): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
     this.creating {
         sourceSets.forEach { this@creating.extendsFrom(it) }
         tasks.register(this@creating.jarTaskName, Jar::class) {
             group = "build"
-            archiveBaseName = "${base.archivesName.get()}-${this@creating.name}"
+            archiveBaseName = name
             from(this@creating.output) { include("**/*.class") }
         }
         configuration.invoke(this@creating)
@@ -53,11 +57,15 @@ fun SourceSetContainer.extending(vararg sourceSets: SourceSet, configuration: So
  * ensures that the sources jar is always built when the build task runs,
  * and invokes the additionally supplied configuration to the created source set
  */
-fun SourceSetContainer.libExtending(vararg sourceSets: SourceSet, configuration: SourceSet.() -> Unit = {}): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
-    this.extending(*sourceSets) {
+fun SourceSetContainer.libExtending(
+    name: String,
+    vararg sourceSets: SourceSet,
+    configuration: SourceSet.() -> Unit = {}
+): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
+    this.extending(name, *sourceSets) {
         tasks.register(this@extending.sourcesJarTaskName, Jar::class) {
             group = "build"
-            archiveBaseName = "${base.archivesName.get()}-${this@extending.name}"
+            archiveBaseName = name
             archiveClassifier = "sources"
             from(this@extending.allSource) { include("**/*.java") }
         }
@@ -75,67 +83,75 @@ val test: SourceSet by sourceSets.getting
 /**
  * SoundSystem loader with example XML
  */
-val utils: SourceSet by sourceSets.libExtending(main)
+val utils: SourceSet by sourceSets.libExtending("SoundSystem-Utils", main)
 
 /**
  * Java's built-in audio library plugin
  */
-val javaSoundPlugin: SourceSet by sourceSets.libExtending(main)
+val javaSoundPlugin: SourceSet by sourceSets.libExtending("LibraryJavaSound", main)
 
 /**
  * LWJGL 2's OpenAL bindings plugin
  */
-val lwjgl2Plugin: SourceSet by sourceSets.libExtending(main)
+val lwjgl2Plugin: SourceSet by sourceSets.libExtending("LibraryLWJGLOpenAL", main)
 
 /**
  * JogAmp's OpenAL bindings plugin
  */
-val jogAmpPlugin: SourceSet by sourceSets.libExtending(main)
+val jogAmpPlugin: SourceSet by sourceSets.libExtending("LibraryJOAL", main)
 
 /**
  * WAV codec plugin
  */
-val wavPlugin: SourceSet by sourceSets.libExtending(main)
+val wavPlugin: SourceSet by sourceSets.libExtending("CodecWAV", main)
 
 /**
  * J-OGG-based OGG codec plugin
  */
-val joggPlugin: SourceSet by sourceSets.libExtending(main)
+val joggPlugin: SourceSet by sourceSets.libExtending("CodecJOgg", main)
 
 /**
  * JOrbis-based OGG codec plugin
  */
-val jOrbisPlugin: SourceSet by sourceSets.libExtending(main)
+val jOrbisPlugin: SourceSet by sourceSets.libExtending("CodecJOrbis", main)
 
 /**
  * IBXM codec plugin
  */
-val ibxmPlugin: SourceSet by sourceSets.libExtending(main)
+val ibxmPlugin: SourceSet by sourceSets.libExtending("CodecIBXM", main)
 
 /**
  * Speex codec plugin
  */
-val jSpeexPlugin: SourceSet by sourceSets.libExtending(main)
+val jSpeexPlugin: SourceSet by sourceSets.libExtending("CodecJSpeex", main)
 
 /**
  * jPCT-friendly version of the SoundSystem
  */
-val jpct: SourceSet by sourceSets.libExtending(main, javaSoundPlugin, lwjgl2Plugin, joggPlugin, wavPlugin)
+val jpct: SourceSet by sourceSets.libExtending("SoundSystem-jPCT", main, javaSoundPlugin, lwjgl2Plugin, joggPlugin, wavPlugin) {
+    tasks.named(this.jarTaskName, Jar::class).configure {
+        from(main.output)
+        from(javaSoundPlugin.output)
+        from(lwjgl2Plugin.output)
+        from(joggPlugin.output)
+        from(wavPlugin.output)
+    }
+}
 
 /**
  * Sound Effect Player demo
  */
-val playerDemo: SourceSet by sourceSets.extending(jpct)
+val playerDemo: SourceSet by sourceSets.extending("Player", jpct)
 
 /**
  * Bullet / Target Collision demo
  */
-val collisionDemo: SourceSet by sourceSets.extending(jpct)
+val collisionDemo: SourceSet by sourceSets.extending("BulletTargetCollision", jpct)
 
 /**
  * Holy Bouncing Helicopter Balls demo
  */
-val helicopterDemo: SourceSet by sourceSets.extending(jpct)
+val helicopterDemo: SourceSet by sourceSets.extending("Helicopter", jpct)
 
 dependencies {
     val jpctImplementation: Configuration = configurations.named(jpct.implementationConfigurationName).get()
