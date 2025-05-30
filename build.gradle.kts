@@ -75,13 +75,67 @@ fun SourceSetContainer.libExtending(
             this@configure.classpath += this@extending.compileClasspath
             this@configure.source += this@extending.allJava
         }
+        createPublication(name)
         configuration.invoke(this@extending)
     }
 
 /**
+ * Creates a Maven publication with a complete POM file for
+ */
+fun SourceSet.createPublication(name: String) {
+    publishing {
+        publications {
+            create<MavenPublication>(name) {
+                pom {
+                    this@pom.name = name
+                    this@pom.description = "PaulsCode SoundSystem"
+                    this@pom.url = "https://web.archive.org/web/20200409022041/http://www.paulscode.com/forum/index.php?topic=4.0"
+                    licenses {
+                        license {
+                            this@license.name = "The SoundSystem License"
+                            this@license.url = "https://web.archive.org/web/20200409022057/http://www.paulscode.com/forum/index.php?topic=4.msg6#msg6"
+                        }
+                    }
+                    developers {
+                        developer {
+                            this@developer.id = "paulscode"
+                            this@developer.name = "Paul Lamb"
+                            this@developer.url = "https://paulscode.com"
+                        }
+                        developer {
+                            this@developer.id = "cpw"
+                            this@developer.url = "https://cpw.github.io"
+                            this@developer.email = "cpw@weeksfamily.ca"
+                        }
+                        developer {
+                            this@developer.id = "halotroop2288"
+                            this@developer.name = "Caroline Joy Bell"
+                            this@developer.url = "https://web0.halotroop.com/caroline"
+                            this@developer.email = "caroline@halotroop.com"
+                        }
+                    }
+                    scm {
+                        this@scm.connection = "scm:git:https://github.com/unimined/Paulscode-SoundSystem.git"
+                        this@scm.developerConnection = "scm:git:ssh://git@github.com:unimined/Paulscode-SoundSystem.git"
+                        this@scm.url = "https://github.com/unimined/Paulscode-SoundSystem"
+                    }
+                }
+                groupId = project.group.toString()
+                artifactId = name
+                version = project.version.toString()
+
+                artifact(tasks.named(this@createPublication.jarTaskName, Jar::class).get())
+            }
+        }
+    }
+}
+
+/**
  * The main version of the SoundSystem
  */
-val main: SourceSet by sourceSets.getting
+val main: SourceSet by sourceSets.getting {
+    createPublication("SoundSystem")
+}
 val test: SourceSet by sourceSets.getting
 
 /**
