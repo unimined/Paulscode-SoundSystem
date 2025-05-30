@@ -20,12 +20,16 @@ repositories {
     maven("https://jogamp.org/deployment/maven")
 }
 
-fun SourceSetContainer.extending(sourceSet: SourceSet): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
+fun SourceSet.extendsFrom(sourceSet: SourceSet) {
+    compileClasspath += sourceSet.compileClasspath
+    runtimeClasspath += sourceSet.runtimeClasspath
+    compileClasspath += sourceSet.output
+    runtimeClasspath += sourceSet.output
+}
+
+fun SourceSetContainer.extending(vararg sourceSet: SourceSet): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
     this.creating {
-        compileClasspath += sourceSet.compileClasspath
-        runtimeClasspath += sourceSet.runtimeClasspath
-        compileClasspath += sourceSet.output
-        runtimeClasspath += sourceSet.output
+        sourceSet.forEach { this@creating.extendsFrom(it) }
         tasks.register(this@creating.jarTaskName, Jar::class) {
             group = "build"
             archiveBaseName = "${base.archivesName.get()}-${this@creating.name}"
@@ -89,7 +93,15 @@ val ibxmPlugin: SourceSet by sourceSets.extending(main)
  */
 val jSpeexPlugin: SourceSet by sourceSets.extending(main)
 
+/**
+ * jPCT-friendly version of the SoundSystem
+ */
+val jpct: SourceSet by sourceSets.extending(main, javaSoundPlugin, lwjgl2Plugin, joggPlugin, wavPlugin)
+
 dependencies {
+    val jpctImplementation: Configuration = configurations.named(jpct.implementationConfigurationName).get()
+    jpctImplementation(files("libs/jpct.jar"))
+
     val lwjglImplementation: Configuration = configurations.named(lwjgl2Plugin.implementationConfigurationName).get()
     lwjglImplementation(libs.bundles.lwjgl)
 
