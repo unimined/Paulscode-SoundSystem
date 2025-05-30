@@ -79,6 +79,11 @@ val jOrbisPlugin: SourceSet by sourceSets.extending(main)
  */
 val ibxmPlugin: SourceSet by sourceSets.extending(main)
 
+/**
+ * Speex codec
+ */
+val jSpeexPlugin: SourceSet by sourceSets.extending(main)
+
 dependencies {
     val lwjglImplementation: Configuration = configurations.named(lwjgl2Plugin.implementationConfigurationName).get()
     lwjglImplementation(libs.bundles.lwjgl)
@@ -91,6 +96,9 @@ dependencies {
 
     val jOrbisImplementation: Configuration = configurations.named(jOrbisPlugin.implementationConfigurationName).get()
     jOrbisImplementation(libs.jorbis)
+
+    val jSpeexImplementation: Configuration = configurations.named(jSpeexPlugin.implementationConfigurationName).get()
+    jSpeexImplementation(libs.jspeex)
 }
 
 publishing {
