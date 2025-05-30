@@ -2,23 +2,23 @@
  * This software is based on or using the LWJGL Lightweight Java Gaming
  * Library available from https://www.lwjgl.org
  *
- * LWJGL 2 License:
+ * LWJGL 3 License:
  *
- * Copyright (c) 2002-2008 Lightweight Java Game Library Project
+ * Copyright (c) 2012-present Lightweight Java Game Library
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
  *
- * * Redistributions of source code must retain the above copyright
+ * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
  *
- * * Redistributions in binary form must reproduce the above copyright
+ * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * * Neither the name of 'Light Weight Java Game Library' nor the names of
+ * - Neither the name Lightweight Java Game Library nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -63,55 +63,44 @@
 
 package paulscode.sound.libraries;
 
-import java.nio.IntBuffer;
-import java.nio.FloatBuffer;
-import java.util.LinkedList;
-import javax.sound.sampled.AudioFormat;
-
-// From the lwjgl library, https://www.lwjgl.org
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
+import paulscode.sound.*;
 
-import paulscode.sound.Channel;
-import paulscode.sound.FilenameURL;
-import paulscode.sound.Source;
-import paulscode.sound.SoundBuffer;
-import paulscode.sound.SoundSystemConfig;
+import javax.sound.sampled.AudioFormat;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.LinkedList;
 
 /**
- * The SourceLWJGLOpenAL class provides an interface to the lwjgl binding of OpenAL.
+ * This class provides an interface to the lwjgl binding of OpenAL.
  */
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class SourceLWJGLOpenAL extends Source {
+public class SourceLWJGL3OpenAL extends Source {
 	/**
 	 * The source's basic Channel type-cast to a ChannelLWJGLOpenAL.
 	 */
-	private ChannelLWJGLOpenAL channelOpenAL = (ChannelLWJGLOpenAL) channel;
+	private ChannelLWJGL3OpenAL channelOpenAL = (ChannelLWJGL3OpenAL) channel;
 
 	/**
 	 * OpenAL IntBuffer sound-buffer identifier for this source if it is a normal
 	 * source.
 	 */
-	private IntBuffer myBuffer;
-
+	private IntBuffer   myBuffer;
 	/**
 	 * FloatBuffer containing the listener's 3D coordinates.
 	 */
 	private FloatBuffer listenerPosition;
-
 	/**
 	 * FloatBuffer containing the source's 3D coordinates.
 	 */
 	private FloatBuffer sourcePosition;
-
 	/**
 	 * FloatBuffer containing the source's velocity vector.
 	 */
 	private FloatBuffer sourceVelocity;
 
 	/**
-	 * Constructor:  Creates a new source using the specified parameters.
-	 *
 	 * @param listenerPosition FloatBuffer containing the listener's 3D coordinates.
 	 * @param myBuffer         OpenAL IntBuffer sound-buffer identifier to use for a new normal source.
 	 * @param priority         Setting this to true will prevent other sounds from overriding this one.
@@ -127,12 +116,12 @@ public class SourceLWJGLOpenAL extends Source {
 	 * @param distOrRoll       Either the fading distance or roll-off factor, depending on the value of 'att'.
 	 * @param temporary        Whether to remove this source after it finishes playing.
 	 */
-	public SourceLWJGLOpenAL(FloatBuffer listenerPosition, IntBuffer myBuffer, boolean priority, boolean toStream, boolean toLoop, String sourceName, FilenameURL filenameURL, SoundBuffer soundBuffer, float x, float y, float z, int attModel, float distOrRoll, boolean temporary) {
+	public SourceLWJGL3OpenAL(FloatBuffer listenerPosition, IntBuffer myBuffer, boolean priority, boolean toStream, boolean toLoop, String sourceName, FilenameURL filenameURL, SoundBuffer soundBuffer, float x, float y, float z, int attModel, float distOrRoll, boolean temporary) {
 		super(priority, toStream, toLoop, sourceName, filenameURL, soundBuffer, x, y, z, attModel, distOrRoll, temporary);
 		if (codec != null) codec.reverseByteOrder(true);
 		this.listenerPosition = listenerPosition;
 		this.myBuffer = myBuffer;
-		libraryType = LibraryLWJGLOpenAL.class;
+		libraryType = LibraryLWJGL3OpenAL.class;
 		pitch = 1.0f;
 		resetALInformation();
 	}
@@ -145,12 +134,12 @@ public class SourceLWJGLOpenAL extends Source {
 	 * @param old              Source to copy information from.
 	 * @param soundBuffer      Buffer containing audio data, or null if not loaded yet.
 	 */
-	public SourceLWJGLOpenAL(FloatBuffer listenerPosition, IntBuffer myBuffer, Source old, SoundBuffer soundBuffer) {
+	public SourceLWJGL3OpenAL(FloatBuffer listenerPosition, IntBuffer myBuffer, Source old, SoundBuffer soundBuffer) {
 		super(old, soundBuffer);
 		if (codec != null) codec.reverseByteOrder(true);
 		this.listenerPosition = listenerPosition;
 		this.myBuffer = myBuffer;
-		libraryType = LibraryLWJGLOpenAL.class;
+		libraryType = LibraryLWJGL3OpenAL.class;
 		pitch = 1.0f;
 		resetALInformation();
 	}
@@ -169,10 +158,10 @@ public class SourceLWJGLOpenAL extends Source {
 	 * @param attModel         Attenuation model to use.
 	 * @param distOrRoll       Either the fading distance or roll-off factor, depending on the value of 'att'.
 	 */
-	public SourceLWJGLOpenAL(FloatBuffer listenerPosition, AudioFormat audioFormat, boolean priority, String sourceName, float x, float y, float z, int attModel, float distOrRoll) {
+	public SourceLWJGL3OpenAL(FloatBuffer listenerPosition, AudioFormat audioFormat, boolean priority, String sourceName, float x, float y, float z, int attModel, float distOrRoll) {
 		super(audioFormat, priority, sourceName, x, y, z, attModel, distOrRoll);
 		this.listenerPosition = listenerPosition;
-		libraryType = LibraryLWJGLOpenAL.class;
+		libraryType = LibraryLWJGL3OpenAL.class;
 		pitch = 1.0f;
 		resetALInformation();
 	}
@@ -308,7 +297,7 @@ public class SourceLWJGLOpenAL extends Source {
 		// make sure we are assigned to a channel:
 		if (channel != null && channel.attachedSource == this && channelOpenAL != null && channelOpenAL.ALSource != null) {
 			// move the source:
-			AL10.alSource(channelOpenAL.ALSource.get(0), AL10.AL_POSITION, sourcePosition);
+			AL10.alSourcefv(channelOpenAL.ALSource.get(0), AL10.AL_POSITION, sourcePosition);
 			checkALError();
 		}
 	}
@@ -332,7 +321,7 @@ public class SourceLWJGLOpenAL extends Source {
 	 * Checks the source's pitch.
 	 */
 	private void checkPitch() {
-		if (channel != null && channel.attachedSource == this && LibraryLWJGLOpenAL.alPitchSupported() && channelOpenAL != null && channelOpenAL.ALSource != null) {
+		if (channel != null && channel.attachedSource == this && LibraryLWJGL3OpenAL.alPitchSupported() && channelOpenAL != null && channelOpenAL.ALSource != null) {
 			AL10.alSourcef(channelOpenAL.ALSource.get(0), AL10.AL_PITCH, pitch);
 			checkALError();
 		}
@@ -407,7 +396,7 @@ public class SourceLWJGLOpenAL extends Source {
 		sourceVelocity.flip();
 		// make sure we are assigned to a channel:
 		if (channel != null && channel.attachedSource == this && channelOpenAL != null && channelOpenAL.ALSource != null) {
-			AL10.alSource(channelOpenAL.ALSource.get(0), AL10.AL_VELOCITY, sourceVelocity);
+			AL10.alSourcefv(channelOpenAL.ALSource.get(0), AL10.AL_VELOCITY, sourceVelocity);
 			checkALError();
 		}
 	}
@@ -447,7 +436,7 @@ public class SourceLWJGLOpenAL extends Source {
 
 		super.play(c);
 
-		channelOpenAL = (ChannelLWJGLOpenAL) channel;
+		channelOpenAL = (ChannelLWJGL3OpenAL) channel;
 
 		// Make sure the channel exists:
 		// check if we are already on this channel:
@@ -457,14 +446,14 @@ public class SourceLWJGLOpenAL extends Source {
 
 			// Send the source's attributes to the channel:
 			if (channelOpenAL != null && channelOpenAL.ALSource != null) {
-				if (LibraryLWJGLOpenAL.alPitchSupported()) {
+				if (LibraryLWJGL3OpenAL.alPitchSupported()) {
 					AL10.alSourcef(channelOpenAL.ALSource.get(0), AL10.AL_PITCH, pitch);
 					checkALError();
 				}
-				AL10.alSource(channelOpenAL.ALSource.get(0), AL10.AL_POSITION, sourcePosition);
+				AL10.alSourcefv(channelOpenAL.ALSource.get(0), AL10.AL_POSITION, sourcePosition);
 				checkALError();
 
-				AL10.alSource(channelOpenAL.ALSource.get(0), AL10.AL_VELOCITY, sourceVelocity);
+				AL10.alSourcefv(channelOpenAL.ALSource.get(0), AL10.AL_VELOCITY, sourceVelocity);
 
 				checkALError();
 

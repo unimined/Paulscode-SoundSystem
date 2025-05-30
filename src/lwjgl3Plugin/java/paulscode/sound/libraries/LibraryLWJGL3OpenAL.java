@@ -2,23 +2,23 @@
  * This software is based on or using the LWJGL Lightweight Java Gaming
  * Library available from https://www.lwjgl.org
  *
- * LWJGL 2 License:
+ * LWJGL 3 License:
  *
- * Copyright (c) 2002-2008 Lightweight Java Game Library Project
+ * Copyright (c) 2012-present Lightweight Java Game Library
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
  *
- * * Redistributions of source code must retain the above copyright
+ * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
  *
- * * Redistributions in binary form must reproduce the above copyright
+ * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * * Neither the name of 'Light Weight Java Game Library' nor the names of
+ * - Neither the name Lightweight Java Game Library nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -63,64 +63,55 @@
 
 package paulscode.sound.libraries;
 
-import java.nio.IntBuffer;
-import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.*;
+import paulscode.sound.*;
+
+import javax.sound.sampled.AudioFormat;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-import javax.sound.sampled.AudioFormat;
-
-// From the lwjgl library, https://www.lwjgl.org
-import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.openal.AL;
-import org.lwjgl.openal.AL10;
-
-import paulscode.sound.Channel;
-import paulscode.sound.FilenameURL;
-import paulscode.sound.ICodec;
-import paulscode.sound.Library;
-import paulscode.sound.ListenerData;
-import paulscode.sound.SoundBuffer;
-import paulscode.sound.SoundSystemConfig;
-import paulscode.sound.SoundSystemException;
-import paulscode.sound.Source;
 
 /**
- * The LibraryLWJGLOpenAL class interfaces the lwjgl binding of OpenAL.
+ * This class interfaces the lwjgl binding of OpenAL.
  */
 @SuppressWarnings("unused")
-public class LibraryLWJGLOpenAL extends Library {
+public class LibraryLWJGL3OpenAL extends Library {
 	/**
 	 * Used to return a current value from one of the synchronized
 	 * boolean-interface methods.
 	 */
 	private static final boolean GET = false;
-
 	/**
 	 * Used to set the value in one of the synchronized boolean-interface methods.
 	 */
 	private static final boolean SET = true;
-
 	/**
 	 * Used when a parameter for one of the synchronized boolean-interface methods
 	 * is not applicable.
 	 */
 	private static final boolean XXX = false;
 
+	private long device  = -1L;
+	private long context = -1L;
+
 	/**
 	 * Position of the listener in 3D space.
 	 */
-	private FloatBuffer                listenerPositionAL  = null;
+	private FloatBuffer listenerPositionAL  = null;
 	/**
 	 * Information about the listener's orientation.
 	 */
-	private FloatBuffer                listenerOrientation = null;
+	private FloatBuffer listenerOrientation = null;
 	/**
 	 * Velocity of the listener.
 	 */
-	private FloatBuffer                listenerVelocity    = null;
+	private FloatBuffer listenerVelocity    = null;
+
 	/**
 	 * Map containing OpenAL identifiers for sound buffers.
 	 */
@@ -132,14 +123,39 @@ public class LibraryLWJGLOpenAL extends Library {
 	private static boolean alPitchSupported = true;
 
 	/**
-	 * Constructor: Instantiates the source map, buffer map and listener
-	 * information.  Also sets the library type to
-	 * SoundSystemConfig.LIBRARY_OPENAL
+	 * Instantiates the source map, buffer map and listener information.
 	 */
-	public LibraryLWJGLOpenAL() throws SoundSystemException {
-		super();
+	public LibraryLWJGL3OpenAL() throws SoundSystemException {
 		ALBufferMap = new HashMap<>();
-		reverseByteOrder = true;
+	}
+
+	private void create() {
+		this.device = ALC10.alcOpenDevice((ByteBuffer) null);
+		if (this.device == 0L) {
+			this.errorMessage("OpenAL device could not be created.");
+		} else {
+			ALCCapabilities deviceCaps = ALC.createCapabilities(this.device);
+			this.context = ALC10.alcCreateContext(this.device, (IntBuffer) null);
+			if (this.context == 0L) {
+				this.errorMessage("OpenAL context could not be created.");
+			}
+
+			ALC10.alcMakeContextCurrent(this.context);
+			AL.createCapabilities(deviceCaps);
+		}
+	}
+
+	private void destroy() {
+		if (this.context != 0L) {
+			ALC10.alcDestroyContext(this.context);
+			this.context = 0L;
+		}
+
+		if (this.device != 0L) {
+			ALC10.alcCloseDevice(this.device);
+			this.device = 0L;
+		}
+
 	}
 
 	/**
@@ -147,18 +163,9 @@ public class LibraryLWJGLOpenAL extends Library {
 	 */
 	@Override
 	public void init() throws SoundSystemException {
-		boolean errors; // set to 'true' if error(s) occur:
-
-		try {
-			// Try and create the sound system:
-			AL.create();
-			errors = checkALError();
-		} catch (LWJGLException e) {
-			// There was an exception
-			errorMessage("Unable to initialize OpenAL.  Probable cause: " + "OpenAL not supported.");
-			printStackTrace(e);
-			throw new LibraryLWJGLOpenAL.Exception(e.getMessage(), LibraryLWJGLOpenAL.Exception.CREATE);
-		}
+		boolean errors = false; // set to 'true' if error(s) occur:
+		create();
+		if (this.checkALError()) errors = true;
 
 		// Let user know if the library loaded properly
 		if (errors) importantMessage("OpenAL did not initialize properly!");
@@ -175,11 +182,11 @@ public class LibraryLWJGLOpenAL extends Library {
 		listenerVelocity.flip();
 
 		// Pass the buffers to the sound system, and check for potential errors:
-		AL10.alListener(AL10.AL_POSITION, listenerPositionAL);
+		AL10.alListenerfv(AL10.AL_POSITION, listenerPositionAL);
 		errors = checkALError() || errors;
-		AL10.alListener(AL10.AL_ORIENTATION, listenerOrientation);
+		AL10.alListenerfv(AL10.AL_ORIENTATION, listenerOrientation);
 		errors = checkALError() || errors;
-		AL10.alListener(AL10.AL_VELOCITY, listenerVelocity);
+		AL10.alListenerfv(AL10.AL_VELOCITY, listenerVelocity);
 		errors = checkALError() || errors;
 
 		AL10.alDopplerFactor(SoundSystemConfig.getDopplerFactor());
@@ -191,24 +198,24 @@ public class LibraryLWJGLOpenAL extends Library {
 		// Let user know what caused the above error messages:
 		if (errors) {
 			importantMessage("OpenAL did not initialize properly!");
-			throw new LibraryLWJGLOpenAL.Exception("Problem encountered " + "while loading OpenAL or " + "creating the listener.  " + "Probable cause:  OpenAL not " + "supported", LibraryLWJGLOpenAL.Exception.CREATE);
+			throw new Exception("Problem encountered " + "while loading OpenAL or " + "creating the listener.  " + "Probable cause:  OpenAL not " + "supported", Exception.CREATE);
 		}
 
 		super.init();
 
 		// Check if we can use the AL_PITCH control:
-		ChannelLWJGLOpenAL channel = (ChannelLWJGLOpenAL) normalChannels.get(1);
+		ChannelLWJGL3OpenAL channel = (ChannelLWJGL3OpenAL) normalChannels.get(1);
 		try {
 			AL10.alSourcef(channel.ALSource.get(0), AL10.AL_PITCH, 1.0f);
 			if (checkALError()) {
 				alPitchSupported(SET, false);
-				throw new LibraryLWJGLOpenAL.Exception("OpenAL: AL_PITCH not " + "supported.", LibraryLWJGLOpenAL.Exception.NO_AL_PITCH);
+				throw new Exception("OpenAL: AL_PITCH not " + "supported.", Exception.NO_AL_PITCH);
 			} else {
 				alPitchSupported(SET, true);
 			}
 		} catch (java.lang.Exception e) {
 			alPitchSupported(SET, false);
-			throw new LibraryLWJGLOpenAL.Exception("OpenAL: AL_PITCH not " + "supported.", LibraryLWJGLOpenAL.Exception.NO_AL_PITCH);
+			throw new Exception("OpenAL: AL_PITCH not " + "supported.", Exception.NO_AL_PITCH);
 		}
 	}
 
@@ -216,32 +223,18 @@ public class LibraryLWJGLOpenAL extends Library {
 	 * @return if the OpenAL library type is compatible.
 	 */
 	public static boolean libraryCompatible() {
-		if (AL.isCreated()) return true;
-
-		try {
-			AL.create();
-		} catch (java.lang.Exception e) {
-			return false;
-		}
-
-		try {
-			AL.destroy();
-		} catch (java.lang.Exception ignored) {
-		}
-
 		return true;
 	}
 
 	/**
-	 * Creates a new channel of the specified type (normal or streaming).  Possible
-	 * values for channel type can be found in the
-	 * {@link SoundSystemConfig SoundSystemConfig} class.
+	 * Creates a new channel of the specified type (normal or streaming).
+	 * Possible values for channel type can be found in the {@link SoundSystemConfig} class.
 	 *
 	 * @param type Type of channel.
 	 */
 	@Override
 	protected Channel createChannel(int type) {
-		ChannelLWJGLOpenAL channel;
+		ChannelLWJGL3OpenAL channel;
 		IntBuffer ALSource;
 
 		ALSource = BufferUtils.createIntBuffer(1);
@@ -254,13 +247,12 @@ public class LibraryLWJGLOpenAL extends Library {
 
 		if (AL10.alGetError() != AL10.AL_NO_ERROR) return null;
 
-		channel = new ChannelLWJGLOpenAL(type, ALSource);
+		channel = new ChannelLWJGL3OpenAL(type, ALSource);
 		return channel;
 	}
 
 	/**
-	 * Stops all sources, shuts down OpenAL, and removes references to all
-	 * instantiated objects.
+	 * Stops all sources, shuts down OpenAL, and removes references to all instantiated objects.
 	 */
 	@Override
 	public void cleanup() {
@@ -283,7 +275,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		}
 
 		bufferMap.clear();
-		AL.destroy();
+		this.destroy();
 
 		bufferMap = null;
 		listenerPositionAL = null;
@@ -368,12 +360,6 @@ public class LibraryLWJGLOpenAL extends Library {
 
 		AL10.alBufferData(intBuffer.get(0), soundFormat, BufferUtils.createByteBuffer(buffer.audioData.length).put(buffer.audioData).flip(), (int) audioFormat.getSampleRate());
 
-		if (errorCheck(AL10.alGetError() != AL10.AL_NO_ERROR, "alBufferData error when loading " + filenameURL.getFilename())) {
-			if (errorCheck(intBuffer == null, "Sound buffer was not created for " + filenameURL.getFilename())) {
-				return false;
-			}
-		}
-
 		ALBufferMap.put(filenameURL.getFilename(), intBuffer);
 
 		return true;
@@ -443,9 +429,6 @@ public class LibraryLWJGLOpenAL extends Library {
 			return false;
 
 		AL10.alBufferData(intBuffer.get(0), soundFormat, BufferUtils.createByteBuffer(buffer.audioData.length).put(buffer.audioData).flip(), (int) audioFormat.getSampleRate());
-
-		if (errorCheck(AL10.alGetError() != AL10.AL_NO_ERROR, "alBufferData error when saving " + identifier))
-			if (errorCheck(intBuffer == null, "Sound buffer was not created for " + identifier)) return false;
 
 		ALBufferMap.put(identifier, intBuffer);
 
@@ -537,7 +520,7 @@ public class LibraryLWJGLOpenAL extends Library {
 			}
 		}
 
-		sourceMap.put(sourceName, new SourceLWJGLOpenAL(listenerPositionAL, myBuffer, priority, toStream, toLoop, sourceName, filenameURL, buffer, x, y, z, attModel, distOrRoll, false));
+		sourceMap.put(sourceName, new SourceLWJGL3OpenAL(listenerPositionAL, myBuffer, priority, toStream, toLoop, sourceName, filenameURL, buffer, x, y, z, attModel, distOrRoll, false));
 	}
 
 	/**
@@ -554,7 +537,7 @@ public class LibraryLWJGLOpenAL extends Library {
 	 */
 	@Override
 	public void rawDataStream(AudioFormat audioFormat, boolean priority, String sourceName, float x, float y, float z, int attModel, float distOrRoll) {
-		sourceMap.put(sourceName, new SourceLWJGLOpenAL(listenerPositionAL, audioFormat, priority, sourceName, x, y, z, attModel, distOrRoll));
+		sourceMap.put(sourceName, new SourceLWJGL3OpenAL(listenerPositionAL, audioFormat, priority, sourceName, x, y, z, attModel, distOrRoll));
 	}
 
 	/**
@@ -609,7 +592,7 @@ public class LibraryLWJGLOpenAL extends Library {
 				return;
 			}
 		}
-		SourceLWJGLOpenAL s = new SourceLWJGLOpenAL(listenerPositionAL, myBuffer, priority, toStream, toLoop, sourceName, filenameURL, buffer, x, y, z, attModel, distOrRoll, false);
+		SourceLWJGL3OpenAL s = new SourceLWJGL3OpenAL(listenerPositionAL, myBuffer, priority, toStream, toLoop, sourceName, filenameURL, buffer, x, y, z, attModel, distOrRoll, false);
 
 		sourceMap.put(sourceName, s);
 		play(s);
@@ -655,7 +638,7 @@ public class LibraryLWJGLOpenAL extends Library {
 					buffer = bufferMap.get(source.filenameURL.getFilename());
 				}
 				if (source.toStream || buffer != null)
-					sourceMap.put(sourceName, new SourceLWJGLOpenAL(listenerPositionAL, ALBufferMap.get(source.filenameURL.getFilename()), source, buffer));
+					sourceMap.put(sourceName, new SourceLWJGL3OpenAL(listenerPositionAL, ALBufferMap.get(source.filenameURL.getFilename()), source, buffer));
 			}
 		}
 	}
@@ -676,7 +659,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		listenerPositionAL.put(2, z);
 
 		// Update OpenAL listener position:
-		AL10.alListener(AL10.AL_POSITION, listenerPositionAL);
+		AL10.alListenerfv(AL10.AL_POSITION, listenerPositionAL);
 		// Check for errors:
 		checkALError();
 	}
@@ -695,7 +678,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		listenerOrientation.put(2, listener.lookAt.z);
 
 		// Update OpenAL listener orientation:
-		AL10.alListener(AL10.AL_ORIENTATION, listenerOrientation);
+		AL10.alListenerfv(AL10.AL_ORIENTATION, listenerOrientation);
 		// Check for errors:
 		checkALError();
 	}
@@ -719,7 +702,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		listenerOrientation.put(3, upX);
 		listenerOrientation.put(4, upY);
 		listenerOrientation.put(5, upZ);
-		AL10.alListener(AL10.AL_ORIENTATION, listenerOrientation);
+		AL10.alListenerfv(AL10.AL_ORIENTATION, listenerOrientation);
 		checkALError();
 	}
 
@@ -736,7 +719,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		listenerPositionAL.put(0, l.position.x);
 		listenerPositionAL.put(1, l.position.y);
 		listenerPositionAL.put(2, l.position.z);
-		AL10.alListener(AL10.AL_POSITION, listenerPositionAL);
+		AL10.alListenerfv(AL10.AL_POSITION, listenerPositionAL);
 		checkALError();
 
 		listenerOrientation.put(0, l.lookAt.x);
@@ -745,13 +728,13 @@ public class LibraryLWJGLOpenAL extends Library {
 		listenerOrientation.put(3, l.up.x);
 		listenerOrientation.put(4, l.up.y);
 		listenerOrientation.put(5, l.up.z);
-		AL10.alListener(AL10.AL_ORIENTATION, listenerOrientation);
+		AL10.alListenerfv(AL10.AL_ORIENTATION, listenerOrientation);
 		checkALError();
 
 		listenerVelocity.put(0, l.velocity.x);
 		listenerVelocity.put(1, l.velocity.y);
 		listenerVelocity.put(2, l.velocity.z);
-		AL10.alListener(AL10.AL_VELOCITY, listenerVelocity);
+		AL10.alListenerfv(AL10.AL_VELOCITY, listenerVelocity);
 		checkALError();
 	}
 
@@ -769,7 +752,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		listenerVelocity.put(0, listener.velocity.x);
 		listenerVelocity.put(1, listener.velocity.y);
 		listenerVelocity.put(2, listener.velocity.z);
-		AL10.alListener(AL10.AL_VELOCITY, listenerVelocity);
+		AL10.alListenerfv(AL10.AL_VELOCITY, listenerVelocity);
 	}
 
 	/**

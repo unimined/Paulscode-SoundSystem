@@ -1,13 +1,12 @@
 [versions]
-lwjgl = "2.9.4+legacyfabric.10"
+lwjgl2 = "2.9.4+legacyfabric.10"
+lwjgl3 = "3.3.3"
 joal = "2.5.0"
 
 [libraries]
-lwjgl_platform = { module = "org.lwjgl.lwjgl:lwjgl-platform", version.ref = "lwjgl" }
-lwjgl_util_applet = { module = "org.lwjgl.lwjgl:lwjgl_util_applet", version.ref = "lwjgl" }
-lwjgl_base = { module = "org.lwjgl.lwjgl:lwjgl", version.ref = "lwjgl" }
-lwjgl_util = { module = "org.lwjgl.lwjgl:lwjgl_util", version.ref = "lwjgl" }
-lwjgl_parent = { module = "org.lwjgl.lwjgl:parent", version.ref = "lwjgl" }
+lwjgl2 = { module = "org.lwjgl.lwjgl:lwjgl", version.ref = "lwjgl2" }
+
+lwjgl3_openal = { module = "org.lwjgl:lwjgl-openal", version.ref = "lwjgl3" }
 
 joal = { module = "org.jogamp.joal:joal", version.ref = "joal" }
 
@@ -16,6 +15,3 @@ jogg_all = { module = "de.jarnbjo:j-ogg-all", version = "1.0.0" }
 jorbis = { module = "org.jcraft:jorbis", version = "0.0.17" }
 
 jspeex = { module = "com.tianscar.javasound:javasound-speex", version = "0.9.8"}
-
-[bundles]
-lwjgl = ["lwjgl_platform", "lwjgl_util_applet", "lwjgl_base", "lwjgl_util", "lwjgl_parent"]

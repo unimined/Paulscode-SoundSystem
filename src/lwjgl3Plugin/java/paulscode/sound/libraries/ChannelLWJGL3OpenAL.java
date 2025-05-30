@@ -2,23 +2,23 @@
  * This software is based on or using the LWJGL Lightweight Java Gaming
  * Library available from https://www.lwjgl.org
  *
- * LWJGL 2 License:
+ * LWJGL 3 License:
  *
- * Copyright (c) 2002-2008 Lightweight Java Game Library Project
+ * Copyright (c) 2012-present Lightweight Java Game Library
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
  *
- * * Redistributions of source code must retain the above copyright
+ * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
  *
- * * Redistributions in binary form must reproduce the above copyright
+ * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * * Neither the name of 'Light Weight Java Game Library' nor the names of
+ * - Neither the name Lightweight Java Game Library nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -63,26 +63,24 @@
 
 package paulscode.sound.libraries;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.LinkedList;
-import javax.sound.sampled.AudioFormat;
-
-// From the lwjgl library, https://www.lwjgl.org
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
-
 import paulscode.sound.Channel;
 import paulscode.sound.SoundSystemConfig;
 
+import javax.sound.sampled.AudioFormat;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.LinkedList;
+
 /**
- * The ChannelLWJGLOpenAL class is used to reserve a sound-card voice using the
+ * This class is used to reserve a sound-card voice using the
  * lwjgl binding of OpenAL.  Channels can be either normal or streaming
  * channels.
  */
 @SuppressWarnings("UnusedReturnValue")
-public class ChannelLWJGLOpenAL extends Channel {
+public class ChannelLWJGL3OpenAL extends Channel {
 	/**
 	 * OpenAL's IntBuffer identifier for this channel.
 	 */
@@ -91,12 +89,11 @@ public class ChannelLWJGLOpenAL extends Channel {
 	/**
 	 * OpenAL data format to use when playing back the assigned source.
 	 */
-	public int ALformat;    // OpenAL data format
-
+	public int alFormat;
 	/**
 	 * Sample rate (speed) to use for play-back.
 	 */
-	public int sampleRate;    // sample rate
+	public int sampleRate;
 
 	/**
 	 * Milliseconds of buffers previously played (streaming sources).
@@ -107,14 +104,14 @@ public class ChannelLWJGLOpenAL extends Channel {
 	 * Constructor:  takes channelType identifier and a handle to the OpenAL
 	 * IntBuffer identifier to use for this channel.  Possible values for channel
 	 * type can be found in the
-	 * {@link paulscode.sound.SoundSystemConfig SoundSystemConfig} class.
+	 * {@link SoundSystemConfig SoundSystemConfig} class.
 	 *
 	 * @param type Type of channel (normal or streaming).
 	 * @param src  Handle to the OpenAL source identifier.
 	 */
-	public ChannelLWJGLOpenAL(int type, IntBuffer src) {
+	public ChannelLWJGL3OpenAL(int type, IntBuffer src) {
 		super(type);
-		libraryType = LibraryLWJGLOpenAL.class;
+		libraryType = LibraryLWJGL3OpenAL.class;
 		ALSource = src;
 	}
 
@@ -127,7 +124,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 		if (ALSource != null) {
 			try {
 				// Stop playing the source:
-				AL10.alSourceStop(ALSource);
+				AL10.alSourceStop(ALSource.get());
 				AL10.alGetError();
 			} catch (Exception ignored) {
 			}
@@ -198,7 +195,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 			errorMessage("Audio data neither mono nor stereo in " + "method 'setAudioFormat'");
 			return;
 		}
-		ALformat = soundFormat;
+		alFormat = soundFormat;
 		sampleRate = (int) audioFormat.getSampleRate();
 	}
 
@@ -210,7 +207,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 	 * @param rate   Sample rate (speed) to use.
 	 */
 	public void setFormat(int format, int rate) {
-		ALformat = format;
+		alFormat = format;
 		sampleRate = rate;
 	}
 
@@ -263,7 +260,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 			byteBuffer = BufferUtils.createByteBuffer(bufferList.get(i).length).put(bufferList.get(i)).flip();
 
 			try {
-				AL10.alBufferData(streamBuffers.get(i), ALformat, byteBuffer, sampleRate);
+				AL10.alBufferData(streamBuffers.get(i), alFormat, byteBuffer, sampleRate);
 			} catch (Exception e) {
 				errorMessage("Error creating buffers in method " + "'preLoadBuffers'");
 				printStackTrace(e);
@@ -309,7 +306,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 		if (AL10.alIsBuffer(intBuffer.get(0))) millisPreviouslyPlayed += millisInBuffer(intBuffer.get(0));
 		checkALError();
 
-		AL10.alBufferData(intBuffer.get(0), ALformat, byteBuffer, sampleRate);
+		AL10.alBufferData(intBuffer.get(0), alFormat, byteBuffer, sampleRate);
 		if (checkALError()) return false;
 
 		AL10.alSourceQueueBuffers(ALSource.get(0), intBuffer);
@@ -357,7 +354,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 		AL10.alGenBuffers(intBuffer);
 		if (errorCheck(checkALError(), "Error generating stream buffers in method 'preLoadBuffers'")) return -1;
 
-		AL10.alBufferData(intBuffer.get(0), ALformat, byteBuffer, sampleRate);
+		AL10.alBufferData(intBuffer.get(0), alFormat, byteBuffer, sampleRate);
 		if (checkALError()) return -1;
 
 		AL10.alSourceQueueBuffers(ALSource.get(0), intBuffer);
@@ -390,7 +387,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 		float offset = (float) AL10.alGetSourcei(ALSource.get(0), AL11.AL_BYTE_OFFSET);
 
 		float bytesPerFrame;
-		switch (ALformat) {
+		switch (alFormat) {
 			case AL10.AL_FORMAT_MONO16:
 			case AL10.AL_FORMAT_STEREO8:
 				bytesPerFrame = 2f;

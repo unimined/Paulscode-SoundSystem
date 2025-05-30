@@ -150,8 +150,17 @@ val javaSoundPlugin: SourceSet by sourceSets.libExtending("LibraryJavaSound", ma
 
 /**
  * LWJGL 2's OpenAL bindings plugin
+ *
+ * Not to be used at the same time as the [lwjgl3Plugin]!
  */
 val lwjgl2Plugin: SourceSet by sourceSets.libExtending("LibraryLWJGLOpenAL", main)
+
+/**
+ * LWJGL 3's OpenAL bindings plugin
+ *
+ * Not to be used at the same time as the [lwjgl2Plugin]!
+ */
+val lwjgl3Plugin: SourceSet by sourceSets.libExtending("LibraryLWJGL3OpenAL", main)
 
 /**
  * JogAmp's OpenAL bindings plugin
@@ -216,7 +225,10 @@ dependencies {
     jpctImplementation(files("libs/jpct.jar"))
 
     val lwjglImplementation: Configuration = configurations.named(lwjgl2Plugin.implementationConfigurationName).get()
-    lwjglImplementation(libs.bundles.lwjgl)
+    lwjglImplementation(libs.lwjgl2)
+
+    val lwjgl3Implementation: Configuration = configurations.named(lwjgl3Plugin.implementationConfigurationName).get()
+    lwjgl3Implementation(libs.lwjgl3.openal)
 
     val joalImplementation: Configuration = configurations.named(jogAmpPlugin.implementationConfigurationName).get()
     joalImplementation(libs.joal)
