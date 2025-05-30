@@ -127,6 +127,11 @@ val jpct: SourceSet by sourceSets.libExtending(main, javaSoundPlugin, lwjgl2Plug
  */
 val playerDemo: SourceSet by sourceSets.extending(jpct)
 
+/**
+ * Bullet / Target Collision demo
+ */
+val collisionDemo: SourceSet by sourceSets.extending(jpct)
+
 dependencies {
     val jpctImplementation: Configuration = configurations.named(jpct.implementationConfigurationName).get()
     jpctImplementation(files("libs/jpct.jar"))
