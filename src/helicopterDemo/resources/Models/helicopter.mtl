@@ -1,0 +1,133 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+newmtl grey2
+Ka  0.4 0.3 0.2
+Kd  0.4 0.3 0.2
+Ks  0.7 0.7 0.7
+d  0.2
+Ns  0.0
+illum 2
+#
+newmtl glass1
+Ka  0.3 0.3 0.2
+Kd  0.3 0.3 0.2
+Ks  0.3 0.3 0.3
+d  0.5
+Ns  0.0
+illum 2
+#
+# Multi/Sub Material__398 (6) to come 
+#
+newmtl camo
+Ka  0.2 0.2 0.1
+Kd  1.0 1.0 1.0
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+map_Kd camo.jpg
+#
+newmtl black1
+Ka  0.0 0.0 0.0
+Kd  0.0 0.0 0.0
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl skin1
+Ka  0.8 0.7 0.6
+Kd  0.8 0.7 0.6
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl brown1
+Ka  0.3 0.3 0.2
+Kd  0.3 0.3 0.2
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl skin2
+Ka  0.8 0.7 0.7
+Kd  0.8 0.7 0.7
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl black2
+Ka  0.0 0.0 0.0
+Kd  0.0 0.0 0.0
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+# Multi/Sub Material__398 done 
+#
+# Multi/Sub Material__409 (7) to come 
+#
+newmtl grey1
+Ka  0.0 0.0 0.0
+Kd  0.3 0.3 0.3
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl camo1
+Ka  0.3 0.4 0.1
+Kd  0.3 0.4 0.1
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl camo2
+Ka  0.0 0.0 0.0
+Kd  0.5 0.4 0.2
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl carbon
+Ka  0.0 0.0 0.0
+Kd  1.0 1.0 1.0
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+map_Kd carbon.jpg
+#
+newmtl grey4
+Ka  0.0 0.0 0.0
+Kd  0.7 0.7 0.7
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl black1
+Ka  0.0 0.0 0.0
+Kd  0.1 0.1 0.1
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl grey3
+Ka  0.0 0.0 0.0
+Kd  0.3 0.3 0.3
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+# Multi/Sub Material__409 done 
+#
+# EOF

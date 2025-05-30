@@ -132,6 +132,11 @@ val playerDemo: SourceSet by sourceSets.extending(jpct)
  */
 val collisionDemo: SourceSet by sourceSets.extending(jpct)
 
+/**
+ * Holy Bouncing Helicopter Balls demo
+ */
+val helicopterDemo: SourceSet by sourceSets.extending(jpct)
+
 dependencies {
     val jpctImplementation: Configuration = configurations.named(jpct.implementationConfigurationName).get()
     jpctImplementation(files("libs/jpct.jar"))

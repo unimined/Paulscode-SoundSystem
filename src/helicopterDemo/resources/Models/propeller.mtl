@@ -1,0 +1,39 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+# Multi/Sub propeller (3) to come 
+#
+newmtl grey4
+Ka  0.2 0.2 0.2
+Kd  0.2 0.2 0.2
+Ks  0.5 0.5 0.5
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl grey3
+Ka  0.3 0.3 0.3
+Kd  0.3 0.3 0.3
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl black1
+Ka  0.1 0.1 0.1
+Kd  0.1 0.1 0.1
+Ks  0.3 0.3 0.3
+d  1.0
+Ns  0.0
+illum 2
+#
+# Multi/Sub propeller done 
+#
+newmtl grey2
+Ka  0.3 0.3 0.2
+Kd  0.3 0.3 0.2
+Ks  0.6 0.6 0.6
+d  0.2
+Ns  0.0
+illum 2
+#
+# EOF
