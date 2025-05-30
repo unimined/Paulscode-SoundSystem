@@ -6,13 +6,15 @@ plugins {
     `maven-publish`
 }
 
+val date: Date = Date()
+
 group = project.properties["maven_group"] as String
 base.archivesName = project.properties["archives_base_name"] as String
 
 // Releases are in DateTime format to continue the tradition
 // Snapshots are simply "1.0.0-SNAPSHOT" to make it easy to get the latest version
 version = if (!project.hasProperty("version_release")) "1.0.0-SNAPSHOT"
-else SimpleDateFormat("yyyyMMddHHmm").format(Date())
+else SimpleDateFormat("yyyyMMddHHmm").format(date)
 
 repositories {
     mavenCentral()
@@ -27,76 +29,103 @@ fun SourceSet.extendsFrom(sourceSet: SourceSet) {
     runtimeClasspath += sourceSet.output
 }
 
-fun SourceSetContainer.extending(vararg sourceSet: SourceSet): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
+/**
+ * Adds the supplied source sets and their dependencies to the source set's classpath,
+ * registers a jar task for the source set,
+ * and invokes the additionally supplied configuration to the created source set
+ */
+fun SourceSetContainer.extending(vararg sourceSets: SourceSet, configuration: SourceSet.() -> Unit = {}): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
     this.creating {
-        sourceSet.forEach { this@creating.extendsFrom(it) }
+        sourceSets.forEach { this@creating.extendsFrom(it) }
         tasks.register(this@creating.jarTaskName, Jar::class) {
             group = "build"
             archiveBaseName = "${base.archivesName.get()}-${this@creating.name}"
             from(this@creating.output) { include("**/*.class") }
         }
-        tasks.register(this@creating.sourcesJarTaskName, Jar::class) {
-            group = "build"
-            archiveBaseName = "${base.archivesName.get()}-${this@creating.name}"
-            archiveClassifier = "sources"
-            from(this@creating.allSource) { include("**/*.java") }
-        }
-        tasks.jar.configure { dependsOn(this@creating.jarTaskName) }
-        tasks.build.configure { dependsOn(this@creating.sourcesJarTaskName) }
+        configuration.invoke(this@creating)
     }
 
+/**
+ * Adds the supplied source sets and their dependencies to the source set's classpath,
+ * registers a jar task for the source set,
+ * registers a sources jar task for the source set,
+ * ensures that the jar is always built when the main jar is built,
+ * ensures that the sources jar is always built when the build task runs,
+ * and invokes the additionally supplied configuration to the created source set
+ */
+fun SourceSetContainer.libExtending(vararg sourceSets: SourceSet, configuration: SourceSet.() -> Unit = {}): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
+    this.extending(*sourceSets) {
+        tasks.register(this@extending.sourcesJarTaskName, Jar::class) {
+            group = "build"
+            archiveBaseName = "${base.archivesName.get()}-${this@extending.name}"
+            archiveClassifier = "sources"
+            from(this@extending.allSource) { include("**/*.java") }
+        }
+        tasks.jar.configure { dependsOn(this@extending.jarTaskName) }
+        tasks.build.configure { dependsOn(this@extending.sourcesJarTaskName) }
+        configuration.invoke(this@extending)
+    }
+
+/**
+ * The main version of the SoundSystem
+ */
 val main: SourceSet by sourceSets.getting
 val test: SourceSet by sourceSets.getting
 
 /**
  * SoundSystem loader with example XML
  */
-val utils: SourceSet by sourceSets.extending(main)
+val utils: SourceSet by sourceSets.libExtending(main)
 
 /**
- * Java's built-in audio library
+ * Java's built-in audio library plugin
  */
-val javaSoundPlugin: SourceSet by sourceSets.extending(main)
+val javaSoundPlugin: SourceSet by sourceSets.libExtending(main)
 
 /**
- * LWJGL 2's OpenAL bindings
+ * LWJGL 2's OpenAL bindings plugin
  */
-val lwjgl2Plugin: SourceSet by sourceSets.extending(main)
+val lwjgl2Plugin: SourceSet by sourceSets.libExtending(main)
 
 /**
- * JogAmp's OpenAL bindings
+ * JogAmp's OpenAL bindings plugin
  */
-val jogAmpPlugin: SourceSet by sourceSets.extending(main)
+val jogAmpPlugin: SourceSet by sourceSets.libExtending(main)
 
 /**
- * WAV codec
+ * WAV codec plugin
  */
-val wavPlugin: SourceSet by sourceSets.extending(main)
+val wavPlugin: SourceSet by sourceSets.libExtending(main)
 
 /**
- * J-OGG-based OGG codec
+ * J-OGG-based OGG codec plugin
  */
-val joggPlugin: SourceSet by sourceSets.extending(main)
+val joggPlugin: SourceSet by sourceSets.libExtending(main)
 
 /**
- * JOrbis-based OGG codec
+ * JOrbis-based OGG codec plugin
  */
-val jOrbisPlugin: SourceSet by sourceSets.extending(main)
+val jOrbisPlugin: SourceSet by sourceSets.libExtending(main)
 
 /**
- * IBXM codec
+ * IBXM codec plugin
  */
-val ibxmPlugin: SourceSet by sourceSets.extending(main)
+val ibxmPlugin: SourceSet by sourceSets.libExtending(main)
 
 /**
- * Speex codec
+ * Speex codec plugin
  */
-val jSpeexPlugin: SourceSet by sourceSets.extending(main)
+val jSpeexPlugin: SourceSet by sourceSets.libExtending(main)
 
 /**
  * jPCT-friendly version of the SoundSystem
  */
-val jpct: SourceSet by sourceSets.extending(main, javaSoundPlugin, lwjgl2Plugin, joggPlugin, wavPlugin)
+val jpct: SourceSet by sourceSets.libExtending(main, javaSoundPlugin, lwjgl2Plugin, joggPlugin, wavPlugin)
+
+/**
+ * Sound Effect Player demo
+ */
+val playerDemo: SourceSet by sourceSets.extending(jpct)
 
 dependencies {
     val jpctImplementation: Configuration = configurations.named(jpct.implementationConfigurationName).get()
@@ -139,4 +168,18 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
     withSourcesJar()
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Specification-Vendor" to "paulscode",
+            "Specification-Title" to "SoundSystem",
+            "Specification-Version" to "1",
+            "Implementation-Title" to project.name,
+            "Implementation-Vendor" to "Unimined",
+            "Implementation-Version" to version,
+            "Implementation-Timestamp" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(date)
+        )
+    }
 }
