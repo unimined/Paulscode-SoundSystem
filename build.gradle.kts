@@ -71,6 +71,10 @@ fun SourceSetContainer.libExtending(
         }
         tasks.jar.configure { dependsOn(this@extending.jarTaskName) }
         tasks.build.configure { dependsOn(this@extending.sourcesJarTaskName) }
+        tasks.javadoc.configure {
+            this@configure.classpath += this@extending.compileClasspath
+            this@configure.source += this@extending.allJava
+        }
         configuration.invoke(this@extending)
     }
 
@@ -194,6 +198,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
     withSourcesJar()
+    withJavadocJar()
 }
 
 tasks.jar {
