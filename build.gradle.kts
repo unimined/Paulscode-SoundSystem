@@ -59,6 +59,11 @@ val lwjgl2Plugin: SourceSet by sourceSets.extending(main)
  */
 val jogAmpPlugin: SourceSet by sourceSets.extending(main)
 
+/**
+ * WAV codec
+ */
+val wavPlugin: SourceSet by sourceSets.extending(main)
+
 dependencies {
     val lwjglImplementation: Configuration = configurations.named(lwjgl2Plugin.implementationConfigurationName).get()
     lwjglImplementation(libs.bundles.lwjgl)
