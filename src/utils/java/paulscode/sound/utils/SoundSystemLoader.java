@@ -53,17 +53,19 @@ public class SoundSystemLoader {
 	private static boolean verbose = false;
 
 	/**
-	 * Parses an XML file and executes the commands it contains.  If a SoundSystem
-	 * instance is specified, it will be used, otherwise this method will create
-	 * a SoundSystem instance and return a handle to it if the XML file contains
-	 * a CREATE tag.  XML tags are NOT case-sensitive.  Parameters must be placed
-	 * inside whichever tag they belong to (nested PARAMETER tags are not
-	 * recognized).  Parameter values must NOT contain whitespace (this includes
-	 * filenames and source names).  Parameter values must NOT be inside quotes.
-	 * Parameter names are NOT case-sensitive, but parameter values ARE case-	 * sensitive.  The supported tags and their parameters are listed below.
-	 * Parameter names in  brackets indicate they are optional.  Parameter names
-	 * without brackets are not optional.  Whenever optional parameters are not
-	 * defined, default values will be used instead.                        <br><br>
+	 * Parses an XML file and executes the commands it contains.<br>
+	 * If a SoundSystem instance is specified, it will be used,
+	 * otherwise this method will create a SoundSystem instance
+	 * and return a handle to it if the XML file contains a CREATE tag.<br>
+	 * XML tags are NOT case-sensitive.<br>
+	 * Parameters must be placed inside whichever tag they belong to (nested PARAMETER tags are not recognized).<br>
+	 * Parameter values must NOT contain whitespace (this includes filenames and source names).<br>
+	 * Parameter values must NOT be inside quotes.<br>
+	 * Parameter names are NOT case-sensitive, but parameter values ARE case-sensitive.<br>
+	 * The supported tags and their parameters are listed below.<br>
+	 * Parameter names in  brackets indicate they are optional.<br>
+	 * Parameter names without brackets are not optional.<br>
+	 * Whenever optional parameters are not defined, default values will be used instead.<br><br>
 	 * !--                                                                      <br>
 	 * &nbsp;&nbsp; XML Comment                                             <br><br>
 	 * ADDLIBRARY                                                               <br>
@@ -144,7 +146,7 @@ public class SoundSystemLoader {
 						// Add the library
 						SoundSystemConfig.addLibrary(c);
 					} catch (ClassNotFoundException cnfe) {
-						errorMessage("Unable to add library plug-in in " + "method 'loadXML':  Class name '" + commands.get("CLASSNAME") + "' not found.");
+						errorMessage("Unable to add library plug-in in method 'loadXML':  Class name '" + commands.get("CLASSNAME") + "' not found.");
 					} catch (SoundSystemException sse) {
 						printStackTrace(sse);
 					}
@@ -163,7 +165,7 @@ public class SoundSystemLoader {
 						// Associate the codec with the correct extension:
 						SoundSystemConfig.setCodec(commands.get("EXTENSION"), c);
 					} catch (ClassNotFoundException cnfe) {
-						errorMessage("Unable to set codec plug-in for " + "extension '" + commands.get("EXTENSION") + "' in method 'loadXML':  Class name '" + commands.get("CLASSNAME") + "' not found.");
+						errorMessage("Unable to set codec plug-in for extension '" + commands.get("EXTENSION") + "' in method 'loadXML':  Class name '" + commands.get("CLASSNAME") + "' not found.");
 					} catch (SoundSystemException sse) {
 						printStackTrace(sse);
 					}
@@ -184,7 +186,8 @@ public class SoundSystemLoader {
 							printStackTrace(e);
 						}
 						if (verbose) {
-							message("Unable to instantiate the Sound System " + "in method 'loadXML'  Returning null.", 1);
+							message("Unable to instantiate the Sound System in method 'loadXML'  " +
+									"Returning null.", 1);
 							if (s != null) s.cleanup();
 							return null;
 						}
@@ -200,7 +203,7 @@ public class SoundSystemLoader {
 					}
 					// Make sure the SoundSystem has been instantiated
 					if (s == null) {
-						errorMessage("Encountered 'loadSound' command " + "before SoundSystem was instantiated " + "in method 'loadXML'.  returning null.");
+						errorMessage("Encountered 'loadSound' command before SoundSystem was instantiated in method 'loadXML'.  returning null.");
 						return null;
 					}
 					if (verbose) message("Command:  s.loadSound( \"" + commands.get("FILENAME") + "\" );", 1);
@@ -212,7 +215,7 @@ public class SoundSystemLoader {
 
 					// Make sure the SoundSystem has been instantiated
 					if (s == null) {
-						errorMessage("Encountered 'newSource' command " + "before SoundSystem was instantiated " + "in method 'loadXML'.  returning null.");
+						errorMessage("Encountered 'newSource' command before SoundSystem was instantiated in method 'loadXML'.  returning null.");
 						return null;
 					}
 					boolean priority = false;
@@ -256,7 +259,8 @@ public class SoundSystemLoader {
 						try {
 							x = Float.parseFloat(parameter);
 						} catch (NumberFormatException nfe) {
-							errorMessage("Error parsing float 'X' from " + "String '" + parameter + "' in " + "method 'loadXML'.  Using x=0");
+							errorMessage("Error parsing float 'X' from String '"
+									+ parameter + "' in method 'loadXML'.  Using x=0");
 							x = 0;
 						}
 					}
@@ -266,7 +270,8 @@ public class SoundSystemLoader {
 						try {
 							y = Float.parseFloat(parameter);
 						} catch (NumberFormatException nfe) {
-							errorMessage("Error parsing float 'Y' from " + "String '" + parameter + "' in " + "method 'loadXML'.  Using y=0");
+							errorMessage("Error parsing float 'Y' from String '" + parameter
+									+ "' in method 'loadXML'.  Using y=0");
 							y = 0;
 						}
 					}
@@ -276,7 +281,8 @@ public class SoundSystemLoader {
 						try {
 							x = Float.parseFloat(parameter);
 						} catch (NumberFormatException nfe) {
-							errorMessage("Error parsing float 'Z' from " + "String '" + parameter + "' in " + "method 'loadXML'.  Using z=0");
+							errorMessage("Error parsing float 'Z' from String '"
+									+ parameter + "' in method 'loadXML'.  Using z=0");
 							z = 0;
 						}
 					}
@@ -295,7 +301,8 @@ public class SoundSystemLoader {
 						try {
 							distOrRoll = Float.parseFloat(parameter);
 						} catch (NumberFormatException nfe) {
-							errorMessage("Error parsing float " + "'DISTORROLL' from String '" + parameter + "' in method " + "'loadXML'.  Using default value.");
+							errorMessage("Error parsing float 'DISTORROLL' from String '"
+									+ parameter + "' in method 'loadXML'.  Using default value.");
 							distOrRoll = 0;
 							if (attModel == SoundSystemConfig.ATTENUATION_LINEAR)
 								distOrRoll = SoundSystemConfig.getDefaultFadeDistance();
@@ -309,13 +316,20 @@ public class SoundSystemLoader {
 							distOrRoll = SoundSystemConfig.getDefaultAttenuation();
 					}
 					if (sourcename.isEmpty()) {
-						errorMessage("Parameter 'SOURCENAME' not " + "specified for 'NEWSOURCE' tag in " + "method 'loadXML.  Unable to create " + "new source.");
+						errorMessage("Parameter 'SOURCENAME' not specified for 'NEWSOURCE' tag in method 'loadXML.  " +
+								"Unable to create new source.");
 					} else if (filename.isEmpty()) {
-						errorMessage("Parameter 'FILENAME' not " + "specified for 'NEWSOURCE' tag in " + "method 'loadXML.  Unable to create " + "new source.");
+						errorMessage("Parameter 'FILENAME' not specified for 'NEWSOURCE' tag in method 'loadXML.  " +
+								"Unable to create new source.");
 					} else {
 						if (verbose)
-							message("Command:  s.CommandQueue( new " + "paulscode.sound.CommandObject( " + "paulscode.sound.CommandObject." + "NEW_SOURCE, " + priority + ", " + toStream + ", " + toLoop + ", \"" + sourcename + "\", " + "new paulscode.sound.FilenameURL( \"" + filename + "\" ), " + x + ", " + y + ", " + z + ", " + attModel + ", " + distOrRoll + " ) );", 1);
-						s.commandQueue(new CommandObject(CommandObject.NEW_SOURCE, priority, toStream, toLoop, sourcename, new FilenameURL(filename), x, y, z, attModel, distOrRoll));
+							message("Command:  s.CommandQueue(new CommandObject(CommandObject.NEW_SOURCE, "
+									+ priority + ", " + toStream + ", " + toLoop + ", \"" + sourcename
+									+ "\", new FilenameURL(\"" + filename + "\"), "
+									+ x + ", " + y + ", " + z + ", " + attModel + ", " + distOrRoll + "));", 1);
+						s.commandQueue(new CommandObject(CommandObject.NEW_SOURCE,
+								priority, toStream, toLoop, sourcename,
+								new FilenameURL(filename), x, y, z, attModel, distOrRoll));
 						if (verbose) message("Command:  s.interruptCommandThread();", 1);
 						s.interruptCommandThread();
 					}
@@ -333,7 +347,7 @@ public class SoundSystemLoader {
 						message("SoundSystemLoader.loadXML:  " + command, 0);
 						message("Unrecognized tag.", 1);
 					} else {
-						warningMessage("Command '" + command + "' not " + "recognized in method 'loadXML'");
+						warningMessage("Command '" + command + "' not recognized in method 'loadXML'");
 					}
 				}
 			}
@@ -354,19 +368,22 @@ public class SoundSystemLoader {
 		verbose = val;
 	}
 
+	static {
+		// Grab a handle to the logger if we don't already have one:
+		logger = SoundSystemConfig.getLogger();
+		// If a logger doesn't exist, make one:
+		if (logger == null) {
+			logger = new SoundSystemLogger();
+			SoundSystemConfig.setLogger(logger);
+		}
+	}
+
 	/**
 	 * Prints a message.
 	 *
 	 * @param message Message to print.
 	 */
 	protected static void message(String message, int indent) {
-		// Grab a handle to the logger if we don't already have one:
-		if (logger == null) logger = SoundSystemConfig.getLogger();
-		// If a logger doesn't exist, make one:
-		if (logger == null) {
-			logger = new SoundSystemLogger();
-			SoundSystemConfig.setLogger(logger);
-		}
 		logger.message(message, indent);
 	}
 
@@ -376,13 +393,6 @@ public class SoundSystemLoader {
 	 * @param message Error message to print.
 	 */
 	protected static void errorMessage(String message) {
-		// Grab a handle to the logger if we don't already have one:
-		if (logger == null) logger = SoundSystemConfig.getLogger();
-		// If a logger doesn't exist, make one:
-		if (logger == null) {
-			logger = new SoundSystemLogger();
-			SoundSystemConfig.setLogger(logger);
-		}
 		logger.errorMessage("SoundSystemLoader", message, 0);
 	}
 
@@ -392,13 +402,6 @@ public class SoundSystemLoader {
 	 * @param message Warning message to print.
 	 */
 	protected static void warningMessage(String message) {
-		// Grab a handle to the logger if we don't already have one:
-		if (logger == null) logger = SoundSystemConfig.getLogger();
-		// If a logger doesn't exist, make one:
-		if (logger == null) {
-			logger = new SoundSystemLogger();
-			SoundSystemConfig.setLogger(logger);
-		}
 		logger.importantMessage("Warning in class 'SoundSystemLoader': " + message, 0);
 	}
 
@@ -408,13 +411,6 @@ public class SoundSystemLoader {
 	 * @param e Exception containing the information to print.
 	 */
 	protected static void printStackTrace(Exception e) {
-		// Grab a handle to the logger if we don't already have one:
-		if (logger == null) logger = SoundSystemConfig.getLogger();
-		// If a logger doesn't exist, make one:
-		if (logger == null) {
-			logger = new SoundSystemLogger();
-			SoundSystemConfig.setLogger(logger);
-		}
 		logger.printStackTrace(e, 1);
 	}
 }

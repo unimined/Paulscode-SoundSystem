@@ -491,7 +491,7 @@ public class Library {
 	 */
 	public float millisecondsPlayed(String sourceName) {
 		if (sourceName == null || sourceName.isEmpty()) {
-			errorMessage("Source name not specified in method " + "'millisecondsPlayed'");
+			errorMessage("Source name not specified in method 'millisecondsPlayed'");
 			return -1;
 		}
 
@@ -501,7 +501,7 @@ public class Library {
 		} else {
 			Source source = sourceMap.get(sourceName);
 			if (source == null) {
-				errorMessage("Source '" + sourceName + "' not found in " + "method 'millisecondsPlayed'");
+				errorMessage("Source '" + sourceName + "' not found in method 'millisecondsPlayed'");
 				return -1;
 			}
 			return source.millisecondsPlayed();
@@ -589,7 +589,7 @@ public class Library {
 		} else {
 			Source source = sourceMap.get(sourceName);
 			if (source == null) {
-				errorMessage("Source '" + sourceName + "' not found in " + "method 'play'");
+				errorMessage("Source '" + sourceName + "' not found in method 'play'");
 			}
 			play(source);
 		}
@@ -1208,7 +1208,7 @@ public class Library {
 		}
 
 		if (!filenameURL.getFilename().matches(SoundSystemConfig.EXTENSION_MIDI)) {
-			errorMessage("Filename/identifier doesn't end in '.mid' or" + "'.midi' in method loadMidi.");
+			errorMessage("Filename/identifier doesn't end in '.mid' or'.midi' in method loadMidi.");
 			return;
 		}
 

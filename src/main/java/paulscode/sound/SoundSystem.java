@@ -304,7 +304,7 @@ public class SoundSystem {
 	 */
 	public void interruptCommandThread() {
 		if (commandThread == null) {
-			errorMessage("Command Thread null in method " + "'interruptCommandThread'", 0);
+			errorMessage("Command Thread null in method 'interruptCommandThread'", 0);
 			return;
 		}
 		// Wake the command thread to process commands:
@@ -1262,8 +1262,8 @@ public class SoundSystem {
 				errorMessage("The specified library did not load properly", 1);
 			}
 
-			if (errorCheck(soundLibrary == null, "Library null after " + "initialization in method 'switchLibrary'", 1)) {
-				SoundSystemException sse = new SoundSystemException(className + " did not load properly.  " + "Library was null after initialization.", SoundSystemException.LIBRARY_NULL);
+			if (errorCheck(soundLibrary == null, "Library null after initialization in method 'switchLibrary'", 1)) {
+				SoundSystemException sse = new SoundSystemException(className + " did not load properly.  Library was null after initialization.", SoundSystemException.LIBRARY_NULL);
 				lastException(SET, sse);
 				initialized(SET, true);
 				throw sse;
@@ -1352,14 +1352,14 @@ public class SoundSystem {
 			errorMessage("The specified library did not load properly", 1);
 		}
 
-		if (errorCheck(soundLibrary == null, "Library null after " + "initialization in method 'newLibrary'", 1)) {
-			lastException(SET, new SoundSystemException(className + " did not load properly.  " + "Library was null after initialization.", SoundSystemException.LIBRARY_NULL));
+		if (errorCheck(soundLibrary == null, "Library null after initialization in method 'newLibrary'", 1)) {
+			lastException(SET, new SoundSystemException(className + " did not load properly.  Library was null after initialization.", SoundSystemException.LIBRARY_NULL));
 			importantMessage("Switching to silent mode", 1);
 
 			try {
 				soundLibrary = new Library();
 			} catch (SoundSystemException sse) {
-				lastException(SET, new SoundSystemException("Silent mode did not load properly.  " + "Library was null after initialization.", SoundSystemException.LIBRARY_NULL));
+				lastException(SET, new SoundSystemException("Silent mode did not load properly.  Library was null after initialization.", SoundSystemException.LIBRARY_NULL));
 				initialized(SET, true);
 				return;
 			}
@@ -1384,8 +1384,8 @@ public class SoundSystem {
 	 */
 	private void CommandInitialize() {
 		try {
-			if (errorCheck(soundLibrary == null, "Library null after " + "initialization in method 'CommandInitialize'", 1)) {
-				SoundSystemException sse = new SoundSystemException(className + " did not load properly.  " + "Library was null after initialization.", SoundSystemException.LIBRARY_NULL);
+			if (errorCheck(soundLibrary == null, "Library null after initialization in method 'CommandInitialize'", 1)) {
+				SoundSystemException sse = new SoundSystemException(className + " did not load properly.  Library was null after initialization.", SoundSystemException.LIBRARY_NULL);
 				lastException(SET, sse);
 				throw sse;
 			}
@@ -1523,7 +1523,7 @@ public class SoundSystem {
 	 */
 	private void CommandCheckFadeVolumes() {
 		if (soundLibrary != null) soundLibrary.checkFadeVolumes();
-		else errorMessage("Variable 'soundLibrary' null in method " + "'CommandCheckFadeVolumes'", 0);
+		else errorMessage("Variable 'soundLibrary' null in method 'CommandCheckFadeVolumes'", 0);
 	}
 
 	/**

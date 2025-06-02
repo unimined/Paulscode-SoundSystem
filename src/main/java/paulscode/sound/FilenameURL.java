@@ -44,7 +44,7 @@ public class FilenameURL {
 	/**
 	 * Filename or identifier for the file.
 	 */
-	private String filename;
+	private final String filename;
 
 	/**
 	 * URL interface to the file.
@@ -107,7 +107,7 @@ public class FilenameURL {
 				try {
 					url = new URL(filename);
 				} catch (Exception e) {
-					errorMessage("Unable to access online URL in " + "method 'getURL'");
+					errorMessage("Unable to access online URL in method 'getURL'");
 					printStackTrace(e);
 					return null;
 				}

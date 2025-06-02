@@ -39,8 +39,10 @@ import paulscode.sound.SoundSystemLogger;
  * <a href="http://www.javazoom.net/javalayer/javalayer.html">JLayer and MP3SPI</a> library
  * and <a href="http://www.tritonus.org/">Tritonus</a> library.</p>
  *
- * JLayer, mp3spi and Tritonus library are released under the conditions of GNU Library General Public License version 2 or (at your option) any later version of the License.
+ * JLayer, MP3SPI and Tritonus library are released under the conditions of
+ * GNU Library General Public License version 2 or (at your option) any later version of the License.
  */
+@SuppressWarnings("unused")
 public class CodecJLayerMP3 implements ICodec {
 	/**
 	 * True if there is no more data to read in.
@@ -110,7 +112,7 @@ public class CodecJLayerMP3 implements ICodec {
 
 			myAudioInputStream = new DecodedMpegAudioInputStream(myAudioFormat, new AudioInputStream(new BufferedInputStream(url.openStream()), mpegAudioFormat, -1));
 		} catch (Exception e) {
-			errorMessage("Unable to set up input streams in method " + "'initialize'");
+			errorMessage("Unable to set up input streams in method 'initialize'");
 			printStackTrace(e);
 			cleanup();
 			return false;
@@ -161,12 +163,8 @@ public class CodecJLayerMP3 implements ICodec {
 				bytesRead += cnt;
 			}
 		} catch (IOException ioe) {
-
-			/*
-			 * errorMessage("Exception thrown while reading from the " +
-			 * "AudioInputStream (location #3)."); printStackTrace( e ); return
-			 * null;
-			 */
+//			 errorMessage("Exception thrown while reading from the AudioInputStream (location #3).");
+//			 printStackTrace( e );
 			// TODO: Figure out why this exceptions is being thrown at end of MP3 files.
 			endOfStream(SET, true);
 			return null;
@@ -181,10 +179,6 @@ public class CodecJLayerMP3 implements ICodec {
 			endOfStream(SET, true);
 			return null;
 		}
-
-		// Insert the converted data into a ByteBuffer.
-		// byte[] data = convertAudioBytes(streamBuffer,
-		// audioFormat.getSampleSizeInBits() == 16);
 
 		// Wrap the data into a SoundBuffer.
 		return new SoundBuffer(streamBuffer, audioFormat);
@@ -213,7 +207,7 @@ public class CodecJLayerMP3 implements ICodec {
 					total += read;
 				}
 			} catch (IOException e) {
-				errorMessage("Exception thrown while reading from the " + "AudioInputStream (location #1).");
+				errorMessage("Exception thrown while reading from the AudioInputStream (location #1).");
 				printStackTrace(e);
 				return null;
 			}
@@ -242,7 +236,7 @@ public class CodecJLayerMP3 implements ICodec {
 						bytesRead += cnt;
 					}
 				} catch (IOException e) {
-					errorMessage("Exception thrown while reading from the " + "AudioInputStream (location #2).");
+					errorMessage("Exception thrown while reading from the AudioInputStream (location #2).");
 					printStackTrace(e);
 					return null;
 				}

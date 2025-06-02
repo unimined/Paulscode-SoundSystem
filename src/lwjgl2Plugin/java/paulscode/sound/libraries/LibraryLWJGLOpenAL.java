@@ -155,7 +155,7 @@ public class LibraryLWJGLOpenAL extends Library {
 			errors = checkALError();
 		} catch (LWJGLException e) {
 			// There was an exception
-			errorMessage("Unable to initialize OpenAL.  Probable cause: " + "OpenAL not supported.");
+			errorMessage("Unable to initialize OpenAL.  Probable cause: OpenAL not supported.");
 			printStackTrace(e);
 			throw new LibraryLWJGLOpenAL.Exception(e.getMessage(), LibraryLWJGLOpenAL.Exception.CREATE);
 		}
@@ -191,7 +191,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		// Let user know what caused the above error messages:
 		if (errors) {
 			importantMessage("OpenAL did not initialize properly!");
-			throw new LibraryLWJGLOpenAL.Exception("Problem encountered " + "while loading OpenAL or " + "creating the listener.  " + "Probable cause:  OpenAL not " + "supported", LibraryLWJGLOpenAL.Exception.CREATE);
+			throw new LibraryLWJGLOpenAL.Exception("Problem encountered while loading OpenAL or creating the listener.  Probable cause:  OpenAL not supported", LibraryLWJGLOpenAL.Exception.CREATE);
 		}
 
 		super.init();
@@ -202,13 +202,13 @@ public class LibraryLWJGLOpenAL extends Library {
 			AL10.alSourcef(channel.ALSource.get(0), AL10.AL_PITCH, 1.0f);
 			if (checkALError()) {
 				alPitchSupported(SET, false);
-				throw new LibraryLWJGLOpenAL.Exception("OpenAL: AL_PITCH not " + "supported.", LibraryLWJGLOpenAL.Exception.NO_AL_PITCH);
+				throw new LibraryLWJGLOpenAL.Exception("OpenAL: AL_PITCH not supported.", LibraryLWJGLOpenAL.Exception.NO_AL_PITCH);
 			} else {
 				alPitchSupported(SET, true);
 			}
 		} catch (java.lang.Exception e) {
 			alPitchSupported(SET, false);
-			throw new LibraryLWJGLOpenAL.Exception("OpenAL: AL_PITCH not " + "supported.", LibraryLWJGLOpenAL.Exception.NO_AL_PITCH);
+			throw new LibraryLWJGLOpenAL.Exception("OpenAL: AL_PITCH not supported.", LibraryLWJGLOpenAL.Exception.NO_AL_PITCH);
 		}
 	}
 
@@ -307,7 +307,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		// Make sure the OpenAL buffer map exists:
 		if (ALBufferMap == null) {
 			ALBufferMap = new HashMap<>();
-			importantMessage("Open AL Buffer Map was null in method" + "'loadSound'");
+			importantMessage("Open AL Buffer Map was null in method 'loadSound'");
 		}
 
 		// make sure they gave us a filename:
@@ -357,7 +357,7 @@ public class LibraryLWJGLOpenAL extends Library {
 				return false;
 			}
 		} else {
-			errorMessage("File neither mono nor stereo in method " + "'loadSound'");
+			errorMessage("File neither mono nor stereo in method 'loadSound'");
 			return false;
 		}
 
@@ -398,7 +398,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		// Make sure the OpenAL buffer map exists:
 		if (ALBufferMap == null) {
 			ALBufferMap = new HashMap<>();
-			importantMessage("Open AL Buffer Map was null in method" + "'loadSound'");
+			importantMessage("Open AL Buffer Map was null in method'loadSound'");
 		}
 
 		// make sure they gave us an identifier:
@@ -433,7 +433,7 @@ public class LibraryLWJGLOpenAL extends Library {
 				return false;
 			}
 		} else {
-			errorMessage("File neither mono nor stereo in method " + "'loadSound'");
+			errorMessage("File neither mono nor stereo in method 'loadSound'");
 			return false;
 		}
 
@@ -503,7 +503,7 @@ public class LibraryLWJGLOpenAL extends Library {
 			// if not found, try loading it:
 			if (myBuffer == null) {
 				if (!loadSound(filenameURL)) {
-					errorMessage("Source '" + sourceName + "' was not created " + "because an error occurred while loading " + filenameURL.getFilename());
+					errorMessage("Source '" + sourceName + "' was not created because an error occurred while loading " + filenameURL.getFilename());
 					return;
 				}
 			}
@@ -512,7 +512,7 @@ public class LibraryLWJGLOpenAL extends Library {
 			myBuffer = ALBufferMap.get(filenameURL.getFilename());
 			// see if it was there this time:
 			if (myBuffer == null) {
-				errorMessage("Source '" + sourceName + "' was not created " + "because a sound buffer was not found for " + filenameURL.getFilename());
+				errorMessage("Source '" + sourceName + "' was not created because a sound buffer was not found for " + filenameURL.getFilename());
 				return;
 			}
 		}
@@ -524,7 +524,7 @@ public class LibraryLWJGLOpenAL extends Library {
 			// if not found, try loading it:
 			if (buffer == null) {
 				if (!loadSound(filenameURL)) {
-					errorMessage("Source '" + sourceName + "' was not created " + "because an error occurred while loading " + filenameURL.getFilename());
+					errorMessage("Source '" + sourceName + "' was not created because an error occurred while loading " + filenameURL.getFilename());
 					return;
 				}
 			}
@@ -532,7 +532,7 @@ public class LibraryLWJGLOpenAL extends Library {
 			buffer = bufferMap.get(filenameURL.getFilename());
 			// see if it was there this time:
 			if (buffer == null) {
-				errorMessage("Source '" + sourceName + "' was not created " + "because audio data was not found for " + filenameURL.getFilename());
+				errorMessage("Source '" + sourceName + "' was not created because audio data was not found for " + filenameURL.getFilename());
 				return;
 			}
 		}
@@ -597,7 +597,7 @@ public class LibraryLWJGLOpenAL extends Library {
 			// if not found, try loading it:
 			if (buffer == null) {
 				if (!loadSound(filenameURL)) {
-					errorMessage("Source '" + sourceName + "' was not created " + "because an error occurred while loading " + filenameURL.getFilename());
+					errorMessage("Source '" + sourceName + "' was not created because an error occurred while loading " + filenameURL.getFilename());
 					return;
 				}
 			}
@@ -605,7 +605,7 @@ public class LibraryLWJGLOpenAL extends Library {
 			buffer = bufferMap.get(filenameURL.getFilename());
 			// see if it was there this time:
 			if (buffer == null) {
-				errorMessage("Source '" + sourceName + "' was not created " + "because audio data was not found for " + filenameURL.getFilename());
+				errorMessage("Source '" + sourceName + "' was not created because audio data was not found for " + filenameURL.getFilename());
 				return;
 			}
 		}
@@ -637,7 +637,7 @@ public class LibraryLWJGLOpenAL extends Library {
 		// Make sure the OpenAL buffer map exists:
 		if (ALBufferMap == null) {
 			ALBufferMap = new HashMap<>();
-			importantMessage("Open AL Buffer Map was null in method" + "'copySources'");
+			importantMessage("Open AL Buffer Map was null in method 'copySources'");
 		}
 
 		// remove any existing sources before starting:

@@ -378,7 +378,7 @@ public class Source {
 	 */
 	public void queueSound(FilenameURL filenameURL) {
 		if (!toStream) {
-			errorMessage("Method 'queueSound' may only be used for " + "streaming and MIDI sources.");
+			errorMessage("Method 'queueSound' may only be used for streaming and MIDI sources.");
 			return;
 		}
 		if (filenameURL == null) {
@@ -401,7 +401,7 @@ public class Source {
 	 */
 	public void dequeueSound(String filename) {
 		if (!toStream) {
-			errorMessage("Method 'dequeueSound' may only be used for " + "streaming and MIDI sources.");
+			errorMessage("Method 'dequeueSound' may only be used for streaming and MIDI sources.");
 			return;
 		}
 		if (filename == null || filename.isEmpty()) {
@@ -436,11 +436,11 @@ public class Source {
 	 */
 	public void fadeOut(FilenameURL filenameURL, long millis) {
 		if (!toStream) {
-			errorMessage("Method 'fadeOut' may only be used for " + "streaming and MIDI sources.");
+			errorMessage("Method 'fadeOut' may only be used for streaming and MIDI sources.");
 			return;
 		}
 		if (millis < 0) {
-			errorMessage("Milliseconds may not be negative in method " + "'fadeOut'.");
+			errorMessage("Milliseconds may not be negative in method 'fadeOut'.");
 			return;
 		}
 
@@ -475,7 +475,7 @@ public class Source {
 	 */
 	public void fadeOutIn(FilenameURL filenameURL, long millisOut, long millisIn) {
 		if (!toStream) {
-			errorMessage("Method 'fadeOutIn' may only be used for " + "streaming and MIDI sources.");
+			errorMessage("Method 'fadeOutIn' may only be used for streaming and MIDI sources.");
 			return;
 		}
 		if (filenameURL == null) {
@@ -570,7 +570,7 @@ public class Source {
 	 */
 	public boolean incrementSoundSequence() {
 		if (!toStream) {
-			errorMessage("Method 'incrementSoundSequence' may only be used " + "for streaming and MIDI sources.");
+			errorMessage("Method 'incrementSoundSequence' may only be used for streaming and MIDI sources.");
 			return false;
 		}
 
@@ -595,7 +595,7 @@ public class Source {
 	 */
 	public boolean readBuffersFromNextSoundInSequence() {
 		if (!toStream) {
-			errorMessage("Method 'readBuffersFromNextSoundInSequence' may " + "only be used for streaming sources.");
+			errorMessage("Method 'readBuffersFromNextSoundInSequence' may only be used for streaming sources.");
 			return false;
 		}
 

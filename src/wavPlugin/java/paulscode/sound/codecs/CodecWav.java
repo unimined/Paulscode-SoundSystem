@@ -108,7 +108,7 @@ public class CodecWav implements ICodec {
 			printStackTrace(e);
 			return false;
 		} catch (IOException e) {
-			errorMessage("Error setting up audio input stream in method " + "'initialize'");
+			errorMessage("Error setting up audio input stream in method 'initialize'");
 			printStackTrace(e);
 			return false;
 		}
@@ -217,7 +217,7 @@ public class CodecWav implements ICodec {
 					total += read;
 				}
 			} catch (IOException e) {
-				errorMessage("Exception thrown while reading from the " + "AudioInputStream (location #1).");
+				errorMessage("Exception thrown while reading from the AudioInputStream (location #1).");
 				printStackTrace(e);
 				return null;
 			}
@@ -245,7 +245,7 @@ public class CodecWav implements ICodec {
 						bytesRead += cnt;
 					}
 				} catch (IOException e) {
-					errorMessage("Exception thrown while reading from the " + "AudioInputStream (location #2).");
+					errorMessage("Exception thrown while reading from the AudioInputStream (location #2).");
 					printStackTrace(e);
 					return null;
 				}

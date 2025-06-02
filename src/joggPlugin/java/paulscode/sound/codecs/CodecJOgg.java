@@ -175,13 +175,13 @@ public class CodecJOgg implements ICodec {
 			// Create the actual audio input stream:
 			myAudioInputStream = new AudioInputStream(myOggInputStream, myAudioFormat, -1);
 		} catch (Exception e) {
-			errorMessage("Unable to set up input streams in method " + "'initialize'");
+			errorMessage("Unable to set up input streams in method 'initialize'");
 			printStackTrace(e);
 			cleanup();
 			return false;
 		}
 		if (myAudioInputStream == null) {
-			errorMessage("Unable to set up audio input stream in method " + "'initialize'");
+			errorMessage("Unable to set up audio input stream in method 'initialize'");
 			cleanup();
 			return false;
 		}
@@ -293,7 +293,7 @@ public class CodecJOgg implements ICodec {
 					total += read;
 				}
 			} catch (IOException e) {
-				errorMessage("Exception thrown while reading from the " + "AudioInputStream (location #1).");
+				errorMessage("Exception thrown while reading from the AudioInputStream (location #1).");
 				printStackTrace(e);
 				return null;
 			}
@@ -321,7 +321,7 @@ public class CodecJOgg implements ICodec {
 						bytesRead += cnt;
 					}
 				} catch (IOException e) {
-					errorMessage("Exception thrown while reading from the " + "AudioInputStream (location #2).");
+					errorMessage("Exception thrown while reading from the AudioInputStream (location #2).");
 					printStackTrace(e);
 					return null;
 				}

@@ -57,6 +57,7 @@ import paulscode.sound.SoundSystemException;
  * For more information about the JavaSound API, visit
  * <a href="https://web.archive.org/web/20100628094942/https://java.sun.com/products/java-media/sound">sun.com</a>
  */
+@SuppressWarnings("unused")
 public class LibraryJavaSound extends Library {
 	/**
 	 * Used to return a current value from one of the synchronized interface
@@ -110,25 +111,23 @@ public class LibraryJavaSound extends Library {
 	private static int lineCount = 32;
 
 	/**
-	 * Whether or not to use the gain control.
+	 * Whether to use the gain control.
 	 */
 	private static boolean useGainControl = true;
 
 	/**
-	 * Whether or not to use the pan control.
+	 * Whether to use the pan control.
 	 */
 	private static boolean usePanControl = true;
 
 	/**
-	 * Whether or not to use the sample rate control.
+	 * Whether to use the sample rate control.
 	 */
 	private static boolean useSampleRateControl = true;
 
 
 	/**
-	 * Constructor: Instantiates the source map, buffer map and listener
-	 * information.  Also sets the library type to
-	 * SoundSystemConfig.LIBRARY_JAVASOUND
+	 * Instantiates the source map, buffer map and listener information.
 	 */
 	public LibraryJavaSound() throws SoundSystemException {
 		super();
@@ -136,7 +135,7 @@ public class LibraryJavaSound extends Library {
 	}
 
 	/**
-	 * Initializes Javasound.
+	 * Initializes JavaSound.
 	 */
 	@Override
 	public void init() throws SoundSystemException {
@@ -150,7 +149,7 @@ public class LibraryJavaSound extends Library {
 					mixerRanker = new MixerRanking();
 					try {
 						mixerRanker.rank(mixerInfo);
-					} catch (LibraryJavaSound.Exception ljse) {
+					} catch (LibraryJavaSound.Exception e) {
 						// Serious problem, don't use it!
 						break;
 					}
@@ -178,14 +177,14 @@ public class LibraryJavaSound extends Library {
 				}
 				// Check if didn't find any usable mixers at all:
 				if (bestRankedMixer == null)
-					throw new LibraryJavaSound.Exception("No useable mixers " + "found!", new MixerRanking());
+					throw new LibraryJavaSound.Exception("No usable mixers found!", new MixerRanking());
 				try {
 					// Use the best available mixer
 					myMixer = AudioSystem.getMixer(bestRankedMixer.mixerInfo);
 					mixerRanking(SET, bestRankedMixer);
 				} catch (java.lang.Exception e) {
-					// Why did we arive here?  Better be prepared for anything
-					throw new LibraryJavaSound.Exception("No useable mixers " + "available!", new MixerRanking());
+					// Why did we arrive here?  Better be prepared for anything
+					throw new LibraryJavaSound.Exception("No usable mixers available!", new MixerRanking());
 				}
 			}
 		}
@@ -245,7 +244,7 @@ public class LibraryJavaSound extends Library {
 	public boolean loadSound(FilenameURL filenameURL) {
 		// Make sure the buffer map exists:
 		if (bufferMap == null) {
-			bufferMap = new HashMap<String, SoundBuffer>();
+			bufferMap = new HashMap<>();
 			importantMessage("Buffer Map was null in method 'loadSound'");
 		}
 
@@ -286,7 +285,7 @@ public class LibraryJavaSound extends Library {
 	public boolean loadSound(SoundBuffer buffer, String identifier) {
 		// Make sure the buffer map exists:
 		if (bufferMap == null) {
-			bufferMap = new HashMap<String, SoundBuffer>();
+			bufferMap = new HashMap<>();
 			importantMessage("Buffer Map was null in method 'loadSound'");
 		}
 
@@ -313,14 +312,14 @@ public class LibraryJavaSound extends Library {
 		super.setMasterVolume(value);
 
 		Set<String> keys = sourceMap.keySet();
-		Iterator<String> iter = keys.iterator();
-		String sourcename;
+		Iterator<String> iterator = keys.iterator();
+		String sourceName;
 		Source source;
 
 		// loop through and update the volume of all sources:
-		while (iter.hasNext()) {
-			sourcename = iter.next();
-			source = sourceMap.get(sourcename);
+		while (iterator.hasNext()) {
+			sourceName = iterator.next();
+			source = sourceMap.get(sourceName);
 			if (source != null) source.positionChanged();
 		}
 	}
@@ -331,16 +330,17 @@ public class LibraryJavaSound extends Library {
 	 * @param priority    Setting this to true will prevent other sounds from overriding this one.
 	 * @param toStream    Setting this to true will load the sound in pieces rather than all at once.
 	 * @param toLoop      Should this source loop, or play only once.
-	 * @param sourcename  A unique identifier for this source.  Two sources may not use the same sourcename.
+	 * @param sourceName  A unique identifier for this source.
+	 *                    Two sources may not use the same source name.
 	 * @param filenameURL Filename/URL of the sound file to play at this source.
 	 * @param x           X position for this source.
 	 * @param y           Y position for this source.
 	 * @param z           Z position for this source.
 	 * @param attModel    Attenuation model to use.
-	 * @param distOrRoll  Either the fading distance or rolloff factor, depending on the value of "attmodel".
+	 * @param distOrRoll  Either the fading distance or roll-off factor, depending on the value of "attModel".
 	 */
 	@Override
-	public void newSource(boolean priority, boolean toStream, boolean toLoop, String sourcename, FilenameURL filenameURL, float x, float y, float z, int attModel, float distOrRoll) {
+	public void newSource(boolean priority, boolean toStream, boolean toLoop, String sourceName, FilenameURL filenameURL, float x, float y, float z, int attModel, float distOrRoll) {
 		SoundBuffer buffer = null;
 
 		if (!toStream) {
@@ -349,7 +349,7 @@ public class LibraryJavaSound extends Library {
 			// if not found, try loading it:
 			if (buffer == null) {
 				if (!loadSound(filenameURL)) {
-					errorMessage("Source '" + sourcename + "' was not created " + "because an error occurred while loading " + filenameURL.getFilename());
+					errorMessage("Source '" + sourceName + "' was not created because an error occurred while loading " + filenameURL.getFilename());
 					return;
 				}
 			}
@@ -357,14 +357,14 @@ public class LibraryJavaSound extends Library {
 			buffer = bufferMap.get(filenameURL.getFilename());
 			// see if it was there this time:
 			if (buffer == null) {
-				errorMessage("Source '" + sourcename + "' was not created " + "because audio data was not found for " + filenameURL.getFilename());
+				errorMessage("Source '" + sourceName + "' was not created because audio data was not found for " + filenameURL.getFilename());
 				return;
 			}
 		}
 
-		if (!toStream && buffer != null) buffer.trimData(maxClipSize);
+		if (!toStream) buffer.trimData(maxClipSize);
 
-		sourceMap.put(sourcename, new SourceJavaSound(listener, priority, toStream, toLoop, sourcename, filenameURL, buffer, x, y, z, attModel, distOrRoll, false));
+		sourceMap.put(sourceName, new SourceJavaSound(listener, priority, toStream, toLoop, sourceName, filenameURL, buffer, x, y, z, attModel, distOrRoll, false));
 	}
 
 	/**
@@ -372,16 +372,16 @@ public class LibraryJavaSound extends Library {
 	 *
 	 * @param audioFormat Format that the data will be in.
 	 * @param priority    Setting this to true will prevent other sounds from overriding this one.
-	 * @param sourcename  A unique identifier for this source.  Two sources may not use the same sourcename.
+	 * @param sourceName  A unique identifier for this source.  Two sources may not use the same source name.
 	 * @param x           X position for this source.
 	 * @param y           Y position for this source.
 	 * @param z           Z position for this source.
 	 * @param attModel    Attenuation model to use.
-	 * @param distOrRoll  Either the fading distance or rolloff factor, depending on the value of "attmodel".
+	 * @param distOrRoll  Either the fading distance or roll-off factor, depending on the value of "attModel".
 	 */
 	@Override
-	public void rawDataStream(AudioFormat audioFormat, boolean priority, String sourcename, float x, float y, float z, int attModel, float distOrRoll) {
-		sourceMap.put(sourcename, new SourceJavaSound(listener, audioFormat, priority, sourcename, x, y, z, attModel, distOrRoll));
+	public void rawDataStream(AudioFormat audioFormat, boolean priority, String sourceName, float x, float y, float z, int attModel, float distOrRoll) {
+		sourceMap.put(sourceName, new SourceJavaSound(listener, audioFormat, priority, sourceName, x, y, z, attModel, distOrRoll));
 	}
 
 	/**
@@ -390,17 +390,17 @@ public class LibraryJavaSound extends Library {
 	 * @param priority    Setting this to true will prevent other sounds from overriding this one.
 	 * @param toStream    Setting this to true will load the sound in pieces rather than all at once.
 	 * @param toLoop      Should this source loop, or play only once.
-	 * @param sourcename  A unique identifier for this source.  Two sources may not use the same sourcename.
+	 * @param sourceName  A unique identifier for this source.  Two sources may not use the same source name.
 	 * @param filenameURL Filename/URL of the sound file to play at this source.
 	 * @param x           X position for this source.
 	 * @param y           Y position for this source.
 	 * @param z           Z position for this source.
 	 * @param attModel    Attenuation model to use.
-	 * @param distOrRoll  Either the fading distance or rolloff factor, depending on the value of "attmodel".
-	 * @param temporary   Whether or not this source should be removed after it finishes playing.
+	 * @param distOrRoll  Either the fading distance or roll-off factor, depending on the value of "attModel".
+	 * @param temporary   Whether this source should be removed after it finishes playing.
 	 */
 	@Override
-	public void quickPlay(boolean priority, boolean toStream, boolean toLoop, String sourcename, FilenameURL filenameURL, float x, float y, float z, int attModel, float distOrRoll, boolean temporary) {
+	public void quickPlay(boolean priority, boolean toStream, boolean toLoop, String sourceName, FilenameURL filenameURL, float x, float y, float z, int attModel, float distOrRoll, boolean temporary) {
 		SoundBuffer buffer = null;
 
 		if (!toStream) {
@@ -409,7 +409,7 @@ public class LibraryJavaSound extends Library {
 			// if not found, try loading it:
 			if (buffer == null) {
 				if (!loadSound(filenameURL)) {
-					errorMessage("Source '" + sourcename + "' was not created " + "because an error occurred while loading " + filenameURL.getFilename());
+					errorMessage("Source '" + sourceName + "' was not created because an error occurred while loading " + filenameURL.getFilename());
 					return;
 				}
 			}
@@ -417,14 +417,14 @@ public class LibraryJavaSound extends Library {
 			buffer = bufferMap.get(filenameURL.getFilename());
 			// see if it was there this time:
 			if (buffer == null) {
-				errorMessage("Source '" + sourcename + "' was not created " + "because audio data was not found for " + filenameURL.getFilename());
+				errorMessage("Source '" + sourceName + "' was not created because audio data was not found for " + filenameURL.getFilename());
 				return;
 			}
 		}
 
 		if (!toStream && buffer != null) buffer.trimData(maxClipSize);
 
-		sourceMap.put(sourcename, new SourceJavaSound(listener, priority, toStream, toLoop, sourcename, filenameURL, buffer, x, y, z, attModel, distOrRoll, temporary));
+		sourceMap.put(sourceName, new SourceJavaSound(listener, priority, toStream, toLoop, sourceName, filenameURL, buffer, x, y, z, attModel, distOrRoll, temporary));
 	}
 
 	/**
@@ -436,13 +436,13 @@ public class LibraryJavaSound extends Library {
 	public void copySources(HashMap<String, Source> srcMap) {
 		if (srcMap == null) return;
 		Set<String> keys = srcMap.keySet();
-		Iterator<String> iter = keys.iterator();
-		String sourcename;
+		Iterator<String> iterator = keys.iterator();
+		String sourceName;
 		Source source;
 
 		// Make sure the buffer map exists:
 		if (bufferMap == null) {
-			bufferMap = new HashMap<String, SoundBuffer>();
+			bufferMap = new HashMap<>();
 			importantMessage("Buffer Map was null in method 'copySources'");
 		}
 
@@ -451,9 +451,9 @@ public class LibraryJavaSound extends Library {
 
 		SoundBuffer buffer;
 		// loop through and copy all the sources:
-		while (iter.hasNext()) {
-			sourcename = iter.next();
-			source = srcMap.get(sourcename);
+		while (iterator.hasNext()) {
+			sourceName = iterator.next();
+			source = srcMap.get(sourceName);
 			if (source != null) {
 				buffer = null;
 				if (!source.toStream) {
@@ -464,7 +464,7 @@ public class LibraryJavaSound extends Library {
 					buffer.trimData(maxClipSize);
 				}
 				if (source.toStream || buffer != null) {
-					sourceMap.put(sourcename, new SourceJavaSound(listener, source, buffer));
+					sourceMap.put(sourceName, new SourceJavaSound(listener, source, buffer));
 				}
 			}
 		}
@@ -531,9 +531,9 @@ public class LibraryJavaSound extends Library {
 			MixerRanking mixerRanker = new MixerRanking();
 			try {
 				mixerRanker.rank(m.getMixerInfo());
-			} catch (LibraryJavaSound.Exception ljse) {
-				SoundSystemConfig.getLogger().printStackTrace(ljse, 1);
-				SoundSystem.setException(ljse);
+			} catch (LibraryJavaSound.Exception e) {
+				SoundSystemConfig.getLogger().printStackTrace(e, 1);
+				SoundSystem.setException(e);
 			}
 			myMixer = m;
 			mixerRanking(SET, mixerRanker);
@@ -653,166 +653,187 @@ public class LibraryJavaSound extends Library {
 	 */
 	public static class MixerRanking {
 		/**
-		 * A priority of HIGH means the Mixer is not usable if the capability
-		 * is not available.
+		 * A priority of HIGH means the Mixer is not usable if the capability is not available.
 		 */
-		public static final int        HIGH                         = 1;
+		public static final int HIGH = 1;
+
 		/**
-		 * A priority of MEDIUM means the Mixer is usable without the
-		 * capability, but functionality is greatly limited.
+		 * A priority of MEDIUM means the Mixer is usable without the capability,
+		 * but functionality is greatly limited.
 		 */
-		public static final int        MEDIUM                       = 2;
+		public static final int MEDIUM = 2;
+
 		/**
 		 * A priority of LOW means the Mixer is usable without the capability,
 		 * but functionality may be somewhat limited.
 		 */
-		public static final int        LOW                          = 3;
+		public static final int LOW = 3;
+
 		/**
-		 * A priority of NONE means the Mixer is fully functional, and loss of
-		 * this capability does not affect the overall ranking.  Used to ignore
-		 * capibilities not used by a particular application.
+		 * A priority of NONE means the Mixer is fully functional,
+		 * and loss of this capability does not affect the overall ranking.
+		 * Used to ignore capabilities not used by a particular application.
 		 */
-		public static final int        NONE                         = 4;
+		public static final int NONE = 4;
+
 		/**
-		 * Priority for the Mixer existing.  Should always be HIGH.
+		 * Priority for the Mixer existing.<br>
+		 * Should always be HIGH.
 		 */
-		public static       int        MIXER_EXISTS_PRIORITY        = HIGH;
+		public static int MIXER_EXISTS_PRIORITY = HIGH;
+
 		/**
-		 * Priority for the desired minimum sample-rate compatibility.  By
-		 * default, this is HIGH.
+		 * Priority for the desired minimum sample-rate compatibility.<br>
+		 * By default, this is HIGH.
 		 */
-		public static       int        MIN_SAMPLE_RATE_PRIORITY     = HIGH;
+		public static int MIN_SAMPLE_RATE_PRIORITY = HIGH;
+
 		/**
-		 * Priority for the desired maximum sample-rate compatibility.  By
-		 * default, this is HIGH.
+		 * Priority for the desired maximum sample-rate compatibility.<br>
+		 * By default, this is HIGH.
 		 */
-		public static       int        MAX_SAMPLE_RATE_PRIORITY     = HIGH;
+		public static int MAX_SAMPLE_RATE_PRIORITY = HIGH;
+
 		/**
-		 * Priority for the desired maximum line-count.  By default, this is
-		 * HIGH.
+		 * Priority for the desired maximum line-count.<br>
+		 * By default, this is HIGH.
 		 */
-		public static       int        LINE_COUNT_PRIORITY          = HIGH;
+		public static int LINE_COUNT_PRIORITY = HIGH;
+
 		/**
-		 * Priority for the gain control.  By default, this is MEDIUM.
+		 * Priority for the gain control.<br>
+		 * By default, this is MEDIUM.
 		 */
-		public static       int        GAIN_CONTROL_PRIORITY        = MEDIUM;
+		public static int GAIN_CONTROL_PRIORITY = MEDIUM;
+
 		/**
-		 * Priority for the pan control.  By default, this is MEDIUM.
+		 * Priority for the pan control.<br>
+		 * By default, this is MEDIUM.
 		 */
-		public static       int        PAN_CONTROL_PRIORITY         = MEDIUM;
+		public static int PAN_CONTROL_PRIORITY = MEDIUM;
+
 		/**
-		 * Priority for the sample-rate control.  By default, this is LOW.
+		 * Priority for the sample-rate control.<br>
+		 * By default, this is LOW.
 		 */
-		public static       int        SAMPLE_RATE_CONTROL_PRIORITY = LOW;
+		public static int SAMPLE_RATE_CONTROL_PRIORITY = LOW;
+
 		/**
 		 * Standard information about the Mixer.
 		 */
-		public              Mixer.Info mixerInfo                    = null;
-		/**
-		 * The Mixer's overall ranking.  Maximum is 14, meaning fully
-		 * functional.  Minimum is 0, meaning not usable.
-		 */
-		public              int        rank                         = 0;
-		/**
-		 * Indicates whether or not the Mixer exists.
-		 */
-		public              boolean    mixerExists                  = false;
-		/**
-		 * Indicates whether or not the desired minimum sample-rate is
-		 * compatible on the Mixer.
-		 */
-		public              boolean    minSampleRateOK              = false;
-		/**
-		 * Indicates whether or not the desired maximum sample-rate is
-		 * compatible on the Mixer.
-		 */
-		public              boolean    maxSampleRateOK              = false;
-		/**
-		 * Indicates whether or not the desired number of lines can be created
-		 * on the Mixer.
-		 */
-		public              boolean    lineCountOK                  = false;
-		/**
-		 * Indicates whether or not gain controls are possible on the Mixer.
-		 */
-		public              boolean    gainControlOK                = false;
-		/**
-		 * Indicates whether or not pan controls are possible on the Mixer.
-		 */
-		public              boolean    panControlOK                 = false;
-		/**
-		 * Indicates whether or not sample-rate controls are possible on the
-		 * Mixer.
-		 */
-		public              boolean    sampleRateControlOK          = false;
+		public Mixer.Info mixerInfo = null;
 
 		/**
-		 * Indicates the minimum sample rate possible for the Mixer, or -1 if
-		 * no sample rate is possible.
+		 * The Mixer's overall ranking.  Maximum is 14, meaning fully functional.<br>
+		 * Minimum is 0, meaning not usable.
+		 */
+		public int rank = 0;
+
+		/**
+		 * Indicates whether the Mixer exists.
+		 */
+		public boolean mixerExists = false;
+
+		/**
+		 * Indicates whether the desired minimum sample-rate is compatible on the Mixer.
+		 */
+		public boolean minSampleRateOK = false;
+
+		/**
+		 * Indicates whether the desired maximum sample-rate is compatible on the Mixer.
+		 */
+		public boolean maxSampleRateOK = false;
+
+		/**
+		 * Indicates whether the desired number of lines can be created on the Mixer.
+		 */
+		public boolean lineCountOK = false;
+
+		/**
+		 * Indicates whether gain controls are possible on the Mixer.
+		 */
+		public boolean gainControlOK = false;
+
+		/**
+		 * Indicates whether pan controls are possible on the Mixer.
+		 */
+		public boolean panControlOK = false;
+
+		/**
+		 * Indicates whether sample-rate controls are possible on the
+		 * Mixer.
+		 */
+		public boolean sampleRateControlOK = false;
+
+		/**
+		 * Indicates the minimum sample rate possible for the Mixer,
+		 * or -1 if no sample rate is possible.
 		 */
 		public int minSampleRatePossible = -1;
+
 		/**
-		 * Indicates the maximum sample rate possible for the Mixer, or -1 if
-		 * no sample rate is possible.
+		 * Indicates the maximum sample rate possible for the Mixer,
+		 * or -1 if no sample rate is possible.
 		 */
 		public int maxSampleRatePossible = -1;
+
 		/**
 		 * Indicates the maximum number of output lines the Mixer can handle.
 		 */
-		public int maxLinesPossible      = 0;
+		public int maxLinesPossible = 0;
 
 		/**
-		 * Constructor: Instantiates a Mixer ranking with default initial
-		 * values.
+		 * Instantiates a Mixer ranking with default initial values.
 		 */
 		public MixerRanking() {
 		}
 
 		/**
-		 * Constructor: Instantiates a Mixer ranking with specified initial
-		 * values.
+		 * Instantiates a Mixer ranking with specified initial values.
 		 *
-		 * @param i    Standard information about the mixer.
-		 * @param r    Overall ranking of the mixer.
-		 * @param e    Whether or not the mixer exists.
-		 * @param mnsr Whether or not minimum sample-rate is compatible.
-		 * @param mxsr Whether or not maximum sample-rate is compatible.
-		 * @param lc   Whether or not number of lines are compatible.
-		 * @param gc   Whether or not gain controls are compatible.
-		 * @param pc   Whether or not pan controls are compatible.
-		 * @param src  Whether or not sample-rate controls are compatible.
+		 * @param mixerInfo    Standard information about the mixer.
+		 * @param rank    Overall ranking of the mixer.
+		 * @param mixerExists    Whether the mixer exists.
+		 * @param minSampleRate Whether minimum sample-rate is compatible.
+		 * @param maxSampleRate Whether maximum sample-rate is compatible.
+		 * @param lineCount   Whether number of lines are compatible.
+		 * @param gainControl   Whether gain controls are compatible.
+		 * @param panControl   Whether pan controls are compatible.
+		 * @param sampleRateControl  Whether sample-rate controls are compatible.
 		 */
-		public MixerRanking(Mixer.Info i, int r, boolean e, boolean mnsr, boolean mxsr, boolean lc, boolean gc, boolean pc, boolean src) {
-			mixerInfo = i;
-			rank = r;
-			mixerExists = e;
-			minSampleRateOK = mnsr;
-			maxSampleRateOK = mxsr;
-			lineCountOK = lc;
-			gainControlOK = gc;
-			panControlOK = pc;
-			sampleRateControlOK = src;
+		public MixerRanking(Mixer.Info mixerInfo, int rank, boolean mixerExists,
+							boolean minSampleRate, boolean maxSampleRate,
+							boolean lineCount, boolean gainControl, boolean panControl, boolean sampleRateControl) {
+			this.mixerInfo = mixerInfo;
+			this.rank = rank;
+			this.mixerExists = mixerExists;
+			this.minSampleRateOK = minSampleRate;
+			this.maxSampleRateOK = maxSampleRate;
+			this.lineCountOK = lineCount;
+			this.gainControlOK = gainControl;
+			this.panControlOK = panControl;
+			this.sampleRateControlOK = sampleRateControl;
 		}
 
 		/**
 		 * Looks up the specified Mixer, tests its capabilities, and calculates
 		 * its overall ranking.
 		 *
-		 * @param i Standard information about the mixer.
+		 * @param mixerInfo Standard information about the mixer.
 		 */
-		public void rank(Mixer.Info i) throws LibraryJavaSound.Exception {
+		public void rank(Mixer.Info mixerInfo) throws LibraryJavaSound.Exception {
 			// STEP 1: Determine if the Mixer exists
-			if (i == null)
-				throw new LibraryJavaSound.Exception("No Mixer info " + "specified in method 'MixerRanking.rank'", this);
-			mixerInfo = i;
+			if (mixerInfo == null)
+				throw new LibraryJavaSound.Exception("No Mixer info specified in method 'MixerRanking.rank'", this);
+			this.mixerInfo = mixerInfo;
 			Mixer m;
 			try {
-				m = AudioSystem.getMixer(mixerInfo);
+				m = AudioSystem.getMixer(this.mixerInfo);
 			} catch (java.lang.Exception e) {
-				throw new LibraryJavaSound.Exception("Unable to acquire the " + "specified Mixer in method 'MixerRanking.rank'", this);
+				throw new LibraryJavaSound.Exception("Unable to acquire the specified Mixer in method 'MixerRanking.rank'", this);
 			}
 			if (m == null)
-				throw new LibraryJavaSound.Exception("Unable to acquire the " + "specified Mixer in method 'MixerRanking.rank'", this);
+				throw new LibraryJavaSound.Exception("Unable to acquire the specified Mixer in method 'MixerRanking.rank'", this);
 			mixerExists = true;
 
 			// STEP 2: Check if the desired sample-rate range is possible
@@ -822,11 +843,11 @@ public class LibraryJavaSound extends Library {
 				format = new AudioFormat(minSampleRate(GET, XXX), 16, 2, true, false);
 				lineInfo = new DataLine.Info(SourceDataLine.class, format);
 			} catch (java.lang.Exception e) {
-				throw new LibraryJavaSound.Exception("Invalid minimum " + "sample-rate specified in method 'MixerRanking.rank'", this);
+				throw new LibraryJavaSound.Exception("Invalid minimum sample-rate specified in method 'MixerRanking.rank'", this);
 			}
 			if (!AudioSystem.isLineSupported(lineInfo)) {
 				if (MIN_SAMPLE_RATE_PRIORITY == HIGH)
-					throw new LibraryJavaSound.Exception("Specified minimum " + "sample-rate not possible for Mixer '" + mixerInfo.getName() + "'", this);
+					throw new LibraryJavaSound.Exception("Specified minimum sample-rate not possible for Mixer '" + this.mixerInfo.getName() + "'", this);
 			} else {
 				minSampleRateOK = true;
 			}
@@ -834,11 +855,11 @@ public class LibraryJavaSound extends Library {
 				format = new AudioFormat(maxSampleRate(GET, XXX), 16, 2, true, false);
 				lineInfo = new DataLine.Info(SourceDataLine.class, format);
 			} catch (java.lang.Exception e) {
-				throw new LibraryJavaSound.Exception("Invalid maximum " + "sample-rate specified in method 'MixerRanking.rank'", this);
+				throw new LibraryJavaSound.Exception("Invalid maximum sample-rate specified in method 'MixerRanking.rank'", this);
 			}
 			if (!AudioSystem.isLineSupported(lineInfo)) {
 				if (MAX_SAMPLE_RATE_PRIORITY == HIGH)
-					throw new LibraryJavaSound.Exception("Specified maximum " + "sample-rate not possible for Mixer '" + mixerInfo.getName() + "'", this);
+					throw new LibraryJavaSound.Exception("Specified maximum sample-rate not possible for Mixer '" + this.mixerInfo.getName() + "'", this);
 			} else {
 				maxSampleRateOK = true;
 			}
@@ -885,41 +906,39 @@ public class LibraryJavaSound extends Library {
 			}
 			// Make sure we have some range of possible sample-rates:
 			if (minSampleRatePossible == -1 || maxSampleRatePossible == -1)
-				throw new LibraryJavaSound.Exception("No possible " + "sample-rate found for Mixer '" + mixerInfo.getName() + "'", this);
+				throw new LibraryJavaSound.Exception("No possible sample-rate found for Mixer '" + this.mixerInfo.getName() + "'", this);
 
 			//STEP 4: Determine if the specified number of lines is possible:
 			format = new AudioFormat(minSampleRatePossible, 16, 2, true, false);
-			Clip clip = null;
+			Clip clip;
 			try {
 				DataLine.Info clipLineInfo = new DataLine.Info(Clip.class, format);
 				clip = (Clip) m.getLine(clipLineInfo);
 				byte[] buffer = new byte[10];
 				clip.open(format, buffer, 0, buffer.length);
 			} catch (java.lang.Exception e) {
-				throw new LibraryJavaSound.Exception("Unable to attach an " + "actual audio buffer " + "to an actual Clip... " + "Mixer '" + mixerInfo.getName() + "' is unuseable.", this);
+				throw new LibraryJavaSound.Exception("Unable to attach an actual audio buffer to an actual Clip... Mixer '" + this.mixerInfo.getName() + "' is unusable.", this);
 			}
 			maxLinesPossible = 1;
 			lineInfo = new DataLine.Info(SourceDataLine.class, format);
 			SourceDataLine[] lines = new SourceDataLine[lineCount(GET, XXX) - 1];
-			int c = 0;
 			int x;
 			for (x = 1; x < lines.length + 1; x++) {
 				try {
 					lines[x - 1] = (SourceDataLine) m.getLine(lineInfo);
 				} catch (java.lang.Exception e) {
 					if (x == 0)
-						throw new LibraryJavaSound.Exception("No output " + "lines possible for Mixer '" + mixerInfo.getName() + "'", this);
+						throw new LibraryJavaSound.Exception("No output lines possible for Mixer '" + this.mixerInfo.getName() + "'", this);
 					else if (LINE_COUNT_PRIORITY == HIGH)
-						throw new LibraryJavaSound.Exception("Specified " + "maximum number of lines not possible for Mixer '" + mixerInfo.getName() + "'", this);
+						throw new LibraryJavaSound.Exception("Specified maximum number of lines not possible for Mixer '" + this.mixerInfo.getName() + "'", this);
 					break;
 				}
 				maxLinesPossible = x + 1;
 			}
 			try {
 				clip.close();
-			} catch (java.lang.Exception e) {
+			} catch (java.lang.Exception ignored) {
 			}
-			clip = null;
 			if (maxLinesPossible == lineCount(GET, XXX)) {
 				lineCountOK = true;
 			}
@@ -929,7 +948,7 @@ public class LibraryJavaSound extends Library {
 				GAIN_CONTROL_PRIORITY = NONE;
 			} else if (!lines[0].isControlSupported(FloatControl.Type.MASTER_GAIN)) {
 				if (GAIN_CONTROL_PRIORITY == HIGH)
-					throw new LibraryJavaSound.Exception("Gain control " + "not available for Mixer '" + mixerInfo.getName() + "'", this);
+					throw new LibraryJavaSound.Exception("Gain control not available for Mixer '" + this.mixerInfo.getName() + "'", this);
 			} else {
 				gainControlOK = true;
 			}
@@ -937,7 +956,7 @@ public class LibraryJavaSound extends Library {
 				PAN_CONTROL_PRIORITY = NONE;
 			} else if (!lines[0].isControlSupported(FloatControl.Type.PAN)) {
 				if (PAN_CONTROL_PRIORITY == HIGH)
-					throw new LibraryJavaSound.Exception("Pan control " + "not available for Mixer '" + mixerInfo.getName() + "'", this);
+					throw new LibraryJavaSound.Exception("Pan control not available for Mixer '" + this.mixerInfo.getName() + "'", this);
 			} else {
 				panControlOK = true;
 			}
@@ -945,7 +964,7 @@ public class LibraryJavaSound extends Library {
 				SAMPLE_RATE_CONTROL_PRIORITY = NONE;
 			} else if (!lines[0].isControlSupported(FloatControl.Type.SAMPLE_RATE)) {
 				if (SAMPLE_RATE_CONTROL_PRIORITY == HIGH)
-					throw new LibraryJavaSound.Exception("Sample-rate " + "control not available for " + "Mixer '" + mixerInfo.getName() + "'", this);
+					throw new LibraryJavaSound.Exception("Sample-rate control not available for Mixer '" + this.mixerInfo.getName() + "'", this);
 			} else {
 				sampleRateControlOK = true;
 			}
@@ -958,25 +977,19 @@ public class LibraryJavaSound extends Library {
 			rank += getRankValue(gainControlOK, GAIN_CONTROL_PRIORITY);
 			rank += getRankValue(panControlOK, PAN_CONTROL_PRIORITY);
 			rank += getRankValue(sampleRateControlOK, SAMPLE_RATE_CONTROL_PRIORITY);
-
-			//STEP 7: Clean up:
-			m = null;
-			format = null;
-			lineInfo = null;
-			lines = null;
 		}
 
 		/**
 		 * Calculates the value of the specified property (or lack thereof).
 		 *
-		 * @param property Whether or not the property is available.
+		 * @param property Whether the property is available.
 		 * @param priority The priority of the specified property.
 		 * @return value to add to the Mixer's rank.
 		 */
 		private int getRankValue(boolean property, int priority) {
-			// Maximum value if the propery is available:
+			// Maximum value if the property is available:
 			if (property) return 2;
-			// Property isn't available..
+			// Property isn't available.
 			// Full value if the property has no priority:
 			if (priority == NONE) return 2;
 			// Half-value if the priority is low:
@@ -1012,8 +1025,7 @@ public class LibraryJavaSound extends Library {
 		}
 
 		/**
-		 * Constructor: Generates an exception of the specified type, with the
-		 * specified message.
+		 * Generates an Exception of the specified type, with the specified message.
 		 *
 		 * @param message A brief description of the problem that occurred.
 		 * @param type    Identifier indicating they type of error.
@@ -1023,9 +1035,8 @@ public class LibraryJavaSound extends Library {
 		}
 
 		/**
-		 * Constructor: Generates a "Mixer Problem" exception with the specified
-		 * message.  Also, the mixer ranking is stored, containing additional
-		 * information about the problem.
+		 * Generates a "Mixer Problem" exception with the specified message.
+		 * Also, the mixer ranking is stored, containing additional information about the problem.
 		 *
 		 * @param message A brief description of the problem that occurred.
 		 * @param rank    Ranking of the mixer involved.
@@ -1034,6 +1045,5 @@ public class LibraryJavaSound extends Library {
 			super(message, MIXER_PROBLEM);
 			mixerRanking = rank;
 		}
-
 	}
 }

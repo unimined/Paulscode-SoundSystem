@@ -226,7 +226,7 @@ public class SoundSystemConfig {
 		if (libraryClass == null)
 			throw new SoundSystemException("Parameter null in method 'addLibrary'", SoundSystemException.NULL_PARAMETER);
 		if (!Library.class.isAssignableFrom(libraryClass))
-			throw new SoundSystemException("The specified class does not " + "extend class 'Library' in method 'addLibrary'");
+			throw new SoundSystemException("The specified class does not extend class 'Library' in method 'addLibrary'");
 
 		if (libraries == null) libraries = new LinkedList<>();
 
@@ -287,17 +287,17 @@ public class SoundSystemConfig {
 	 */
 	public static String getLibraryTitle(Class<?> libraryClass) {
 		if (libraryClass == null) {
-			errorMessage("Parameter 'libraryClass' null in method" + "'getLibraryTitle'");
+			errorMessage("Parameter 'libraryClass' null in method 'getLibraryTitle'");
 			return null;
 		}
 		if (!Library.class.isAssignableFrom(libraryClass)) {
-			errorMessage("The specified class does not extend class " + "'Library' in method 'getLibraryTitle'");
+			errorMessage("The specified class does not extend class 'Library' in method 'getLibraryTitle'");
 			return null;
 		}
 
 		Object o = runMethod(libraryClass, "getTitle", new Class[0], new Object[0]);
 		if (o == null) {
-			errorMessage("Method 'Library.getTitle' returned " + "'null' in method 'getLibraryTitle'");
+			errorMessage("Method 'Library.getTitle' returned 'null' in method 'getLibraryTitle'");
 			return null;
 		}
 
@@ -312,17 +312,17 @@ public class SoundSystemConfig {
 	 */
 	public static String getLibraryDescription(Class<?> libraryClass) {
 		if (libraryClass == null) {
-			errorMessage("Parameter 'libraryClass' null in method" + "'getLibraryDescription'");
+			errorMessage("Parameter 'libraryClass' null in method 'getLibraryDescription'");
 			return null;
 		}
 		if (!Library.class.isAssignableFrom(libraryClass)) {
-			errorMessage("The specified class does not extend class " + "'Library' in method 'getLibraryDescription'");
+			errorMessage("The specified class does not extend class 'Library' in method 'getLibraryDescription'");
 			return null;
 		}
 
 		Object o = runMethod(libraryClass, "getDescription", new Class[0], new Object[0]);
 		if (o == null) {
-			errorMessage("Method 'Library.getDescription' returned " + "'null' in method 'getLibraryDescription'");
+			errorMessage("Method 'Library.getDescription' returned 'null' in method 'getLibraryDescription'");
 			return null;
 		}
 
@@ -337,17 +337,17 @@ public class SoundSystemConfig {
 	 */
 	public static boolean reverseByteOrder(Class<?> libraryClass) {
 		if (libraryClass == null) {
-			errorMessage("Parameter 'libraryClass' null in method" + "'reverseByteOrder'");
+			errorMessage("Parameter 'libraryClass' null in method 'reverseByteOrder'");
 			return false;
 		}
 		if (!Library.class.isAssignableFrom(libraryClass)) {
-			errorMessage("The specified class does not extend class " + "'Library' in method 'reverseByteOrder'");
+			errorMessage("The specified class does not extend class 'Library' in method 'reverseByteOrder'");
 			return false;
 		}
 
 		Object o = runMethod(libraryClass, "reversByteOrder", new Class[0], new Object[0]);
 		if (o == null) {
-			errorMessage("Method 'Library.reverseByteOrder' returned " + "'null' in method 'getLibraryDescription'");
+			errorMessage("Method 'Library.reverseByteOrder' returned 'null' in method 'getLibraryDescription'");
 			return false;
 		}
 
@@ -706,11 +706,11 @@ public class SoundSystemConfig {
 	 */
 	public static synchronized void setCodec(String extension, Class<?> iCodecClass) throws SoundSystemException {
 		if (extension == null)
-			throw new SoundSystemException("Parameter 'extension' null in " + "method 'setCodec'.", SoundSystemException.NULL_PARAMETER);
+			throw new SoundSystemException("Parameter 'extension' null in method 'setCodec'.", SoundSystemException.NULL_PARAMETER);
 		if (iCodecClass == null)
-			throw new SoundSystemException("Parameter 'iCodecClass' null in " + "method 'setCodec'.", SoundSystemException.NULL_PARAMETER);
+			throw new SoundSystemException("Parameter 'iCodecClass' null in method 'setCodec'.", SoundSystemException.NULL_PARAMETER);
 		if (!ICodec.class.isAssignableFrom(iCodecClass))
-			throw new SoundSystemException("The specified class does " + "not implement interface 'ICodec' in method 'setCodec'", SoundSystemException.CLASS_TYPE_MISMATCH);
+			throw new SoundSystemException("The specified class does not implement interface 'ICodec' in method 'setCodec'", SoundSystemException.CLASS_TYPE_MISMATCH);
 
 		if (codecs == null) codecs = new LinkedList<>();
 
@@ -845,17 +845,19 @@ public class SoundSystemConfig {
 		try {
 			m = c.getMethod(method, paramTypes);  // <--- generates a warning
 		} catch (NoSuchMethodException e) {
-			errorMessage("NoSuchMethodException thrown when attempting " + "to call method '" + method + "' in " + "method 'runMethod'");
+			errorMessage("NoSuchMethodException thrown when attempting to call method '" + method
+					+ "' in method 'runMethod'");
 			return null;
 		} catch (SecurityException e) {
 			errorMessage("Access denied when attempting to call method '" + method + "' in method 'runMethod'");
 			return null;
 		} catch (NullPointerException e) {
-			errorMessage("NullPointerException thrown when attempting " + "to call method '" + method + "' in " + "method 'runMethod'");
+			errorMessage("NullPointerException thrown when attempting to call method '" + method
+					+ "' in method 'runMethod'");
 			return null;
 		}
 		if (m == null) {
-			errorMessage("Method '" + method + "' not found for the class " + "specified in method 'runMethod'");
+			errorMessage("Method '" + method + "' not found for the class specified in method 'runMethod'");
 			return null;
 		}
 
@@ -863,19 +865,24 @@ public class SoundSystemConfig {
 		try {
 			o = m.invoke(null, params);
 		} catch (IllegalAccessException iae) {
-			errorMessage("IllegalAccessException thrown when attempting to invoke method '" + method + "' in " + "method 'runMethod'");
+			errorMessage("IllegalAccessException thrown when attempting to invoke method '" + method
+					+ "' in method 'runMethod'");
 			return null;
 		} catch (IllegalArgumentException iae) {
-			errorMessage("IllegalArgumentException thrown when attempting to invoke method '" + method + "' in " + "method 'runMethod'");
+			errorMessage("IllegalArgumentException thrown when attempting to invoke method '" + method
+					+ "' in method 'runMethod'");
 			return null;
 		} catch (InvocationTargetException ite) {
-			errorMessage("InvocationTargetException thrown while attempting to invoke method 'Library.getTitle' in " + "method 'getLibraryTitle'");
+			errorMessage("InvocationTargetException thrown while attempting to invoke method 'Library.getTitle'" +
+					" in method 'getLibraryTitle'");
 			return null;
 		} catch (NullPointerException npe) {
-			errorMessage("NullPointerException thrown when attempting to invoke method '" + method + "' in " + "method 'runMethod'");
+			errorMessage("NullPointerException thrown when attempting to invoke method '" + method
+					+ "' in method 'runMethod'");
 			return null;
 		} catch (ExceptionInInitializerError e) {
-			errorMessage("ExceptionInInitializerError thrown when attempting to invoke method '" + method + "' in " + "method 'runMethod'");
+			errorMessage("ExceptionInInitializerError thrown when attempting to invoke method '" + method
+					+ "' in method 'runMethod'");
 			return null;
 		}
 
@@ -952,7 +959,7 @@ public class SoundSystemConfig {
 		}
 
 		private void instantiationErrorMessage() {
-			errorMessage("Unrecognized ICodec implementation in method " + "'getInstance'.  Ensure that the implementing " + "class has one public, parameterless constructor.");
+			errorMessage("Unrecognized ICodec implementation in method 'getInstance'.  Ensure that the implementing class has one public, parameterless constructor.");
 		}
 	}
 //  END PRIVATE INTERNAL CLASSES

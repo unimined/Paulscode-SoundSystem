@@ -229,7 +229,7 @@ public class SourceJOAL extends Source {
 	@Override
 	public boolean incrementSoundSequence() {
 		if (!toStream) {
-			errorMessage("Method 'incrementSoundSequence' may only be used " + "for streaming sources.");
+			errorMessage("Method 'incrementSoundSequence' may only be used for streaming sources.");
 			return false;
 		}
 		synchronized (soundSequenceLock) {
@@ -244,7 +244,7 @@ public class SourceJOAL extends Source {
 					AudioFormat audioFormat = codec.getAudioFormat();
 
 					if (audioFormat == null) {
-						errorMessage("Audio Format null in method " + "'incrementSoundSequence'");
+						errorMessage("Audio Format null in method 'incrementSoundSequence'");
 						return false;
 					}
 
@@ -255,7 +255,7 @@ public class SourceJOAL extends Source {
 						} else if (audioFormat.getSampleSizeInBits() == 16) {
 							soundFormat = AL.AL_FORMAT_MONO16;
 						} else {
-							errorMessage("Illegal sample size in method " + "'incrementSoundSequence'");
+							errorMessage("Illegal sample size in method 'incrementSoundSequence'");
 							return false;
 						}
 					} else if (audioFormat.getChannels() == 2) {
@@ -264,11 +264,11 @@ public class SourceJOAL extends Source {
 						} else if (audioFormat.getSampleSizeInBits() == 16) {
 							soundFormat = AL.AL_FORMAT_STEREO16;
 						} else {
-							errorMessage("Illegal sample size in method " + "'incrementSoundSequence'");
+							errorMessage("Illegal sample size in method 'incrementSoundSequence'");
 							return false;
 						}
 					} else {
-						errorMessage("Audio data neither mono nor stereo in " + "method 'incrementSoundSequence'");
+						errorMessage("Audio data neither mono nor stereo in method 'incrementSoundSequence'");
 						return false;
 					}
 
@@ -518,7 +518,7 @@ public class SourceJOAL extends Source {
 						return;
 					}
 				} else {
-					errorMessage("Audio data neither mono nor stereo in " + "method 'play'");
+					errorMessage("Audio data neither mono nor stereo in method 'play'");
 					return;
 				}
 

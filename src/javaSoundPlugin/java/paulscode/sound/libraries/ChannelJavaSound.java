@@ -192,7 +192,7 @@ public class ChannelJavaSound extends Channel {
 	 */
 	public boolean attachBuffer(SoundBuffer buffer) {
 		// Can only attach a buffer to a normal source:
-		if (errorCheck(channelType != SoundSystemConfig.TYPE_NORMAL, "Buffers may only be attached to non-streaming " + "sources"))
+		if (errorCheck(channelType != SoundSystemConfig.TYPE_NORMAL, "Buffers may only be attached to non-streaming sources"))
 			return false;
 
 		// make sure the Mixer exists:
@@ -203,11 +203,11 @@ public class ChannelJavaSound extends Channel {
 
 		// make sure the buffer exists:
 		assert buffer != null;
-		if (errorCheck(buffer.audioData == null, "Buffer missing audio data in method " + "'attachBuffer'"))
+		if (errorCheck(buffer.audioData == null, "Buffer missing audio data in method 'attachBuffer'"))
 			return false;
 
 		// make sure there is format information about this sound buffer:
-		if (errorCheck(buffer.audioFormat == null, "Buffer missing format information in method " + "'attachBuffer'"))
+		if (errorCheck(buffer.audioFormat == null, "Buffer missing format information in method 'attachBuffer'"))
 			return false;
 
 		DataLine.Info lineInfo;
@@ -242,7 +242,7 @@ public class ChannelJavaSound extends Channel {
 			if (clip == null) return false;
 			clip.open(myFormat, buffer.audioData, 0, buffer.audioData.length);
 		} catch (Exception e) {
-			errorMessage("Unable to attach buffer to clip in method " + "'attachBuffer'");
+			errorMessage("Unable to attach buffer to clip in method 'attachBuffer'");
 			printStackTrace(e);
 			return false;
 		}
@@ -287,7 +287,7 @@ public class ChannelJavaSound extends Channel {
 		try {
 			newSourceDataLine = (SourceDataLine) myMixer.getLine(lineInfo);
 		} catch (Exception e) {
-			errorMessage("Unable to create a SourceDataLine " + "in method 'resetStream'");
+			errorMessage("Unable to create a SourceDataLine in method 'resetStream'");
 			printStackTrace(e);
 			return false;
 		}
@@ -312,7 +312,7 @@ public class ChannelJavaSound extends Channel {
 			if (sourceDataLine == null) return false;
 			sourceDataLine.open(myFormat);
 		} catch (Exception e) {
-			errorMessage("Unable to open the new SourceDataLine in method " + "'resetStream'");
+			errorMessage("Unable to open the new SourceDataLine in method 'resetStream'");
 			printStackTrace(e);
 			return false;
 		}
@@ -412,7 +412,7 @@ public class ChannelJavaSound extends Channel {
 				}
 				break;
 			default:
-				errorMessage("Unrecognized channel type in method " + "'resetControls'");
+				errorMessage("Unrecognized channel type in method 'resetControls'");
 				panControl = null;
 				gainControl = null;
 				sampleRateControl = null;

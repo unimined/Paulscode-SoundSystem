@@ -153,7 +153,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 	 */
 	public boolean attachBuffer(IntBuffer buf) {
 		// A sound buffer can only be attached to a normal source:
-		if (errorCheck(channelType != SoundSystemConfig.TYPE_NORMAL, "Sound buffers may only be attached to normal " + "sources."))
+		if (errorCheck(channelType != SoundSystemConfig.TYPE_NORMAL, "Sound buffers may only be attached to normal sources."))
 			return false;
 
 		// send the sound buffer to the channel:
@@ -182,7 +182,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 			} else if (audioFormat.getSampleSizeInBits() == 16) {
 				soundFormat = AL10.AL_FORMAT_MONO16;
 			} else {
-				errorMessage("Illegal sample size in method " + "'setAudioFormat'");
+				errorMessage("Illegal sample size in method 'setAudioFormat'");
 				return;
 			}
 		} else if (audioFormat.getChannels() == 2) {
@@ -191,11 +191,11 @@ public class ChannelLWJGLOpenAL extends Channel {
 			} else if (audioFormat.getSampleSizeInBits() == 16) {
 				soundFormat = AL10.AL_FORMAT_STEREO16;
 			} else {
-				errorMessage("Illegal sample size in method " + "'setAudioFormat'");
+				errorMessage("Illegal sample size in method 'setAudioFormat'");
 				return;
 			}
 		} else {
-			errorMessage("Audio data neither mono nor stereo in " + "method 'setAudioFormat'");
+			errorMessage("Audio data neither mono nor stereo in method 'setAudioFormat'");
 			return;
 		}
 		ALformat = soundFormat;
@@ -265,7 +265,7 @@ public class ChannelLWJGLOpenAL extends Channel {
 			try {
 				AL10.alBufferData(streamBuffers.get(i), ALformat, byteBuffer, sampleRate);
 			} catch (Exception e) {
-				errorMessage("Error creating buffers in method " + "'preLoadBuffers'");
+				errorMessage("Error creating buffers in method 'preLoadBuffers'");
 				printStackTrace(e);
 				return false;
 			}

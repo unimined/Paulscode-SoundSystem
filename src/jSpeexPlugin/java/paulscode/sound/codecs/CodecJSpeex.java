@@ -285,7 +285,7 @@ public class CodecJSpeex implements ICodec {
 				for (; curseg < segments && totalBytes < maxBytes; curseg++) {
 					bodybytes = header[OGG_HEADERSIZE + curseg] & 0xFF;
 					if (bodybytes == 255) {
-						errorMessage("Unable to handle ogg body size 255 " + "in method 'readAll'");
+						errorMessage("Unable to handle ogg body size 255 in method 'readAll'");
 						return null;
 					}
 					dis.readFully(payload, 0, bodybytes);
@@ -326,7 +326,7 @@ public class CodecJSpeex implements ICodec {
 					for (curseg = 0; curseg < segments && totalBytes < maxBytes; curseg++) {
 						bodybytes = header[OGG_HEADERSIZE + curseg] & 0xFF;
 						if (bodybytes == 255) {
-							errorMessage("Unable to handle ogg body size " + "255 in method 'readAll'");
+							errorMessage("Unable to handle ogg body size 255 in method 'readAll'");
 							return null;
 						}
 						dis.readFully(payload, 0, bodybytes);
@@ -386,7 +386,7 @@ public class CodecJSpeex implements ICodec {
 			try {
 				dis.readFully(header, 0, OGG_HEADERSIZE);
 			} catch (IOException ioe) {
-				errorMessage("Unable to read first segment of ogg header " + "in method 'processHeader'");
+				errorMessage("Unable to read first segment of ogg header in method 'processHeader'");
 				printStackTrace(ioe);
 				return false;
 			}
@@ -408,7 +408,7 @@ public class CodecJSpeex implements ICodec {
 			try {
 				dis.readFully(header, OGG_HEADERSIZE, segments);
 			} catch (IOException ioe) {
-				errorMessage("Unable to read second segment of ogg header " + "in method 'processHeader'");
+				errorMessage("Unable to read second segment of ogg header in method 'processHeader'");
 				printStackTrace(ioe);
 				return false;
 			}
@@ -418,13 +418,13 @@ public class CodecJSpeex implements ICodec {
 			for (curseg = 0; packetNo == 0; curseg++) {
 				bodybytes = header[OGG_HEADERSIZE + curseg] & 0xFF;
 				if (bodybytes == 255) {
-					errorMessage("Unable to handle ogg body size 255 in " + "method 'processHeader'");
+					errorMessage("Unable to handle ogg body size 255 in method 'processHeader'");
 					return false;
 				}
 				try {
 					dis.readFully(payload, 0, bodybytes);
 				} catch (IOException ioe) {
-					errorMessage("Unable to read segment " + curseg + " of the ogg body in method " + "'processHeader'");
+					errorMessage("Unable to read segment " + curseg + " of the ogg body in method 'processHeader'");
 					printStackTrace(ioe);
 					return false;
 				}
@@ -442,18 +442,18 @@ public class CodecJSpeex implements ICodec {
 			try {
 				dis.readFully(header, 0, WAV_HEADERSIZE + 4);
 			} catch (IOException ioe) {
-				errorMessage("Error reading first segment of wav header " + "in method 'processHeader'");
+				errorMessage("Error reading first segment of wav header in method 'processHeader'");
 				printStackTrace(ioe);
 				return false;
 			}
 			if (!RIFF.equals(new String(header, 0, 4)) && !WAVE.equals(new String(header, 8, 4))) {
-				errorMessage("Containing file not in the wav format in " + "method 'processHeader'");
+				errorMessage("Containing file not in the wav format in method 'processHeader'");
 				return false;
 			}
 			try {
 				dis.readFully(header, 0, WAV_HEADERSIZE);
 			} catch (IOException ioe) {
-				errorMessage("Error reading second segment of wav header " + "in method 'processHeader'");
+				errorMessage("Error reading second segment of wav header in method 'processHeader'");
 				printStackTrace(ioe);
 				return false;
 			}
@@ -463,20 +463,20 @@ public class CodecJSpeex implements ICodec {
 				try {
 					dis.readFully(header, 0, size);
 				} catch (IOException ioe) {
-					errorMessage("Error reading segment '" + chunk + "' of wav header in method " + "'processHeader'");
+					errorMessage("Error reading segment '" + chunk + "' of wav header in method 'processHeader'");
 					printStackTrace(ioe);
 					return false;
 				}
 				if (chunk.equals(FORMAT)) {
 					if (readShort(header, 0) != WAVE_FORMAT_SPEEX) {
-						errorMessage("File is not a 'Wave Speex' file in " + "method 'processHeader'");
+						errorMessage("File is not a 'Wave Speex' file in method 'processHeader'");
 						return false;
 					}
 					channels = readShort(header, 2);
 					sampleRate = readInt(header, 4);
 					bodybytes = readShort(header, 12);
 					if (readShort(header, 16) < 82) {
-						errorMessage("Possibly corrupt Speex Wave file in " + "method 'processHeader'");
+						errorMessage("Possibly corrupt Speex Wave file in method 'processHeader'");
 						return false;
 					}
 					readSpeexHeader(header, 20, 80);
@@ -484,7 +484,7 @@ public class CodecJSpeex implements ICodec {
 				try {
 					dis.readFully(header, 0, WAV_HEADERSIZE);
 				} catch (IOException ioe) {
-					errorMessage("Error reading title of wav header " + "segment after segment '" + chunk + "' in method 'processHeader'");
+					errorMessage("Error reading title of wav header segment after segment '" + chunk + "' in method 'processHeader'");
 					printStackTrace(ioe);
 					return false;
 				}
@@ -555,7 +555,7 @@ public class CodecJSpeex implements ICodec {
 	 */
 	private boolean readSpeexHeader(final byte[] packet, final int offset, final int bytes) {
 		if (bytes != 80) {
-			errorMessage("Header byte size not 80 in method " + "'readSpeexHeader'");
+			errorMessage("Header byte size not 80 in method 'readSpeexHeader'");
 			return false;
 		}
 		if (!"Speex   ".equals(new String(packet, offset, 8))) {

@@ -226,8 +226,8 @@ public class SoundSystemPlayer extends JFrame implements Runnable {
 						streamPlayStop = false;
 						JavaOpenAL = !JavaOpenAL;
 					} catch (SoundSystemException e) {
-						if (JavaOpenAL) System.out.println("JavaSound library not " + "compatible on this computer");
-						else System.out.println("OpenAL library not " + "compatible on this computer");
+						if (JavaOpenAL) System.out.println("JavaSound library not compatible on this computer");
+						else System.out.println("OpenAL library not compatible on this computer");
 						e.printStackTrace();
 					}
 					drawFrame();
