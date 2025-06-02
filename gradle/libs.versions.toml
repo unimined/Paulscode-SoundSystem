@@ -15,3 +15,5 @@ jogg_all = { module = "de.jarnbjo:j-ogg-all", version = "1.0.0" }
 jorbis = { module = "org.jcraft:jorbis", version = "0.0.17" }
 
 jspeex = { module = "com.tianscar.javasound:javasound-speex", version = "0.9.8"}
+
+jlayer = { module = "javazoom:jlayer", version = "1.0.1" }
