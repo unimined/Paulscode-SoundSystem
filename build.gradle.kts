@@ -23,12 +23,28 @@ repositories {
     maven("https://www.beatunes.com/repo/maven2")
 }
 
-fun SourceSet.extendsFrom(sourceSet: SourceSet) {
-    compileClasspath += sourceSet.compileClasspath
-    runtimeClasspath += sourceSet.runtimeClasspath
+fun SourceSet.extendsFrom(sourceSet: SourceSet, name: String) {
+    configurations {
+        maybeCreate(this@extendsFrom.apiConfigurationName).apply {
+            extendsFrom(getByName(sourceSet.apiConfigurationName))
+        }
+        maybeCreate(this@extendsFrom.runtimeClasspathConfigurationName).apply {
+            extendsFrom(getByName(sourceSet.runtimeClasspathConfigurationName))
+        }
+        maybeCreate(this@extendsFrom.implementationConfigurationName).apply {
+            extendsFrom(getByName(sourceSet.implementationConfigurationName))
+        }
+    }
+    dependencies {
+        this@extendsFrom.apiConfigurationName("com.paulscode:$name:1.0.0")
+    }
+//    compileClasspath += sourceSet.compileClasspath
+//    runtimeClasspath += sourceSet.runtimeClasspath
     compileClasspath += sourceSet.output
     runtimeClasspath += sourceSet.output
 }
+
+val artifactNames = mutableMapOf<SourceSet, String>(sourceSets.main.get() to "SoundSystem")
 
 /**
  * Adds the supplied source sets and their dependencies to the source set's classpath,
@@ -41,7 +57,8 @@ fun SourceSetContainer.extending(
     configuration: SourceSet.() -> Unit = {}
 ): NamedDomainObjectContainerCreatingDelegateProvider<SourceSet> =
     this.creating {
-        sourceSets.forEach { this@creating.extendsFrom(it) }
+        artifactNames[this@creating] = name
+        sourceSets.forEach { this@creating.extendsFrom(it, artifactNames.getValue(it)) }
         tasks.register(this@creating.jarTaskName, Jar::class) {
             group = "build"
             archiveBaseName = name
@@ -70,12 +87,19 @@ fun SourceSetContainer.libExtending(
             archiveClassifier = "sources"
             from(this@extending.allSource) { include("**/*.java") }
         }
-        tasks.jar.configure { dependsOn(this@extending.jarTaskName) }
-        tasks.build.configure { dependsOn(this@extending.sourcesJarTaskName) }
-        tasks.javadoc.configure {
-            this@configure.classpath += this@extending.compileClasspath
-            this@configure.source += this@extending.allJava
+        tasks.register(this@extending.javadocTaskName, Javadoc::class) {
+            group = "build"
+            setDestinationDir(file("${buildDir}/${name}Javadoc"))
+            source = this@extending.allJava
         }
+        tasks.register(this@extending.javadocJarTaskName, Jar::class) {
+            group = "build"
+            archiveBaseName = name
+            archiveClassifier = "javadoc"
+            from(this@extending.javadocTaskName)
+        }
+        tasks.jar.configure { dependsOn(this@extending.jarTaskName) }
+        tasks.build.configure { dependsOn(this@extending.sourcesJarTaskName, this@extending.javadocJarTaskName) }
         createPublication(name)
         configuration.invoke(this@extending)
     }
@@ -84,6 +108,73 @@ fun SourceSetContainer.libExtending(
  * Creates a Maven publication with a complete POM file for
  */
 fun SourceSet.createPublication(name: String) {
+    val jarTask = tasks.named(this@createPublication.jarTaskName, Jar::class)
+    configurations {
+        maybeCreate(this@createPublication.apiConfigurationName)
+
+        maybeCreate(this@createPublication.apiElementsConfigurationName).apply {
+            isCanBeConsumed = true
+            extendsFrom(getByName(this@createPublication.apiConfigurationName))
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_API))
+            }
+        }
+        maybeCreate(this@createPublication.runtimeElementsConfigurationName).apply {
+            isCanBeConsumed = true
+            extendsFrom(getByName(this@createPublication.runtimeClasspathConfigurationName))
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+            }
+        }
+        maybeCreate(this@createPublication.sourcesElementsConfigurationName).apply {
+            isCanBeConsumed = true
+            attributes {
+                attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType.SOURCES))
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_API))
+                attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.DOCUMENTATION))
+            }
+        }
+        maybeCreate(this@createPublication.javadocElementsConfigurationName).apply {
+            isCanBeConsumed = true
+            attributes {
+                attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType.JAVADOC))
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_API))
+                attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.DOCUMENTATION))
+            }
+        }
+    }
+    artifacts {
+        add(this@createPublication.apiElementsConfigurationName, tasks.getByName(this@createPublication.jarTaskName)) {
+            builtBy(this@createPublication.jarTaskName)
+        }
+        add(this@createPublication.runtimeElementsConfigurationName, tasks.getByName(this@createPublication.jarTaskName)) {
+            builtBy(this@createPublication.jarTaskName)
+        }
+        add(this@createPublication.javadocElementsConfigurationName, tasks.getByName(this@createPublication.javadocJarTaskName)) {
+            builtBy(this@createPublication.javadocJarTaskName)
+            classifier = "javadoc"
+        }
+        add(this@createPublication.sourcesElementsConfigurationName, tasks.getByName(this@createPublication.sourcesJarTaskName)) {
+            builtBy(this@createPublication.sourcesJarTaskName)
+            classifier = "sources"
+        }
+    }
+    abstract class InstrumentedJarsPlugin @Inject constructor(
+        val softwareComponentFactory: SoftwareComponentFactory)
+    val fac = project.objects.newInstance(InstrumentedJarsPlugin::class.java).softwareComponentFactory
+    components {
+        add(fac.adhoc("${name}Component"))
+    }
+    components {
+        getByName("${name}Component", AdhocComponentWithVariants::class) {
+            addVariantsFromConfiguration(configurations.getByName(this@createPublication.apiElementsConfigurationName)) {}
+            addVariantsFromConfiguration(configurations.getByName(this@createPublication.runtimeElementsConfigurationName)) {
+                mapToMavenScope("runtime")
+            }
+            addVariantsFromConfiguration(configurations.getByName(this@createPublication.sourcesElementsConfigurationName)) {}
+            addVariantsFromConfiguration(configurations.getByName(this@createPublication.javadocElementsConfigurationName)) {}
+        }
+    }
     publishing {
         publications {
             create<MavenPublication>(name) {
@@ -125,10 +216,17 @@ fun SourceSet.createPublication(name: String) {
                 artifactId = name
                 version = project.version.toString()
 
-                artifact(tasks.named(this@createPublication.jarTaskName, Jar::class).get())
+                from(components.getByName("${name}Component"))
             }
         }
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
 }
 
 /**
@@ -266,13 +364,6 @@ publishing {
             }
         }
     }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-    withSourcesJar()
-    withJavadocJar()
 }
 
 tasks.jar {
