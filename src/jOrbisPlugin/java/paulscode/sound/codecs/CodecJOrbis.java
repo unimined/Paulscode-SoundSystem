@@ -223,23 +223,6 @@ import paulscode.sound.SoundSystemLogger;
 @SuppressWarnings({"unused", "FieldMayBeFinal", "FieldCanBeLocal"})
 public class CodecJOrbis implements ICodec {
 	/**
-	 * Used to return a current value from one of the synchronized
-	 * boolean-interface methods.
-	 */
-	private static final boolean GET = false;
-
-	/**
-	 * Used to set the value in one of the synchronized boolean-interface methods.
-	 */
-	private static final boolean SET = true;
-
-	/**
-	 * Used when a parameter for one of the synchronized boolean-interface methods
-	 * is not applicable.
-	 */
-	private static final boolean XXX = false;
-
-	/**
 	 * URL to the audio file to stream from.
 	 */
 	private URL url;

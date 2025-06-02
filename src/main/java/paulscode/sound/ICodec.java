@@ -35,8 +35,20 @@ import javax.sound.sampled.AudioFormat;
  * The ICodec interface provides a common interface for SoundSystem to use
  * for accessing external codec libraries.
  */
-@SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface ICodec {
+	/**
+	 * Used to return a current value from one of the synchronized boolean-interface methods.
+	 */
+	boolean GET = false;
+	/**
+	 * Used to set the value in one of the synchronized boolean-interface methods.
+	 */
+	boolean SET = true;
+	/**
+	 * Used when a parameter for one of the synchronized boolean-interface methods is not applicable.
+	 */
+	boolean XXX = false;
+
 	/**
 	 * Should tell derived classes when they may need to reverse the byte order of
 	 * the data before returning it in the {@link #read()} and {@link #readAll()} methods.
