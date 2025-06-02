@@ -20,6 +20,7 @@ repositories {
     mavenCentral()
     maven("https://maven.legacyfabric.net")
     maven("https://jogamp.org/deployment/maven")
+    maven("https://www.beatunes.com/repo/maven2")
 }
 
 fun SourceSet.extendsFrom(sourceSet: SourceSet) {
@@ -193,6 +194,11 @@ val ibxmPlugin: SourceSet by sourceSets.libExtending("CodecIBXM", main)
 val jSpeexPlugin: SourceSet by sourceSets.libExtending("CodecJSpeex", main)
 
 /**
+ * JLayer-based MP3 codec
+ */
+val jlayerMP3Plugin: SourceSet by sourceSets.libExtending("CodecJLayerMP3", main)
+
+/**
  * jPCT-friendly version of the SoundSystem
  */
 val jpct: SourceSet by sourceSets.libExtending("SoundSystem-jPCT", main, javaSoundPlugin, lwjgl2Plugin, joggPlugin, wavPlugin) {
@@ -221,26 +227,23 @@ val collisionDemo: SourceSet by sourceSets.extending("BulletTargetCollision", jp
 val helicopterDemo: SourceSet by sourceSets.extending("Helicopter", jpct)
 
 dependencies {
-    val jpctImplementation: Configuration = configurations.named(jpct.implementationConfigurationName).get()
-    jpctImplementation(files("libs/jpct.jar"))
+    "jpctImplementation"(files("libs/jpct.jar"))
 
-    val lwjglImplementation: Configuration = configurations.named(lwjgl2Plugin.implementationConfigurationName).get()
-    lwjglImplementation(libs.lwjgl2)
+    "lwjgl2PluginImplementation"(libs.lwjgl2)
 
-    val lwjgl3Implementation: Configuration = configurations.named(lwjgl3Plugin.implementationConfigurationName).get()
-    lwjgl3Implementation(libs.lwjgl3.openal)
+    "lwjgl3PluginImplementation"(libs.lwjgl3.openal)
 
-    val joalImplementation: Configuration = configurations.named(jogAmpPlugin.implementationConfigurationName).get()
-    joalImplementation(libs.joal)
+    "jogAmpPluginImplementation"(libs.joal)
 
-    val joggImplementation: Configuration = configurations.named(joggPlugin.implementationConfigurationName).get()
-    joggImplementation(libs.jogg.all)
+    "joggPluginImplementation"(libs.jogg.all)
 
-    val jOrbisImplementation: Configuration = configurations.named(jOrbisPlugin.implementationConfigurationName).get()
-    jOrbisImplementation(libs.jorbis)
+    "jOrbisPluginImplementation"(libs.jorbis)
 
-    val jSpeexImplementation: Configuration = configurations.named(jSpeexPlugin.implementationConfigurationName).get()
-    jSpeexImplementation(libs.jspeex)
+    "jSpeexPluginImplementation"(libs.jspeex)
+
+    "jlayerMP3PluginImplementation"(libs.jlayer)
+    "jlayerMP3PluginImplementation"("javazoom:mp3spi:1.9.4")
+    "jlayerMP3PluginImplementation"("org.tritonus:Tritonus:1.4compatible")
 }
 
 publishing {
