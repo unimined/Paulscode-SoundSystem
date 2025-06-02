@@ -218,19 +218,20 @@ import paulscode.sound.SoundSystemConfig;
 import paulscode.sound.SoundSystemLogger;
 
 /**
- * The CodecJOrbis class provides an ICodec interface to the external JOrbis library.
+ * This class provides an ICodec interface
+ * for reading from OGG files via the JOrbis library.
  */
-@SuppressWarnings({"unused", "FieldMayBeFinal", "FieldCanBeLocal"})
+@SuppressWarnings("FieldMayBeFinal")
 public class CodecJOrbis implements ICodec {
 	/**
 	 * URL to the audio file to stream from.
 	 */
-	private URL url;
+	protected URL url;
 
 	/**
 	 * Used for connecting to the URL.
 	 */
-	private URLConnection urlConnection = null;
+	protected URLConnection urlConnection = null;
 
 	/**
 	 * InputStream context for reading data from the file.
@@ -295,35 +296,42 @@ public class CodecJOrbis implements ICodec {
 	/**
 	 * Data packet.
 	 */
-	private Packet      joggPacket      = new Packet();
+	private Packet joggPacket = new Packet();
+
 	/**
 	 * Data Page.
 	 */
-	private Page        joggPage        = new Page();
+	private Page joggPage = new Page();
+
 	/**
 	 * Stream state.
 	 */
 	private StreamState joggStreamState = new StreamState();
+
 	/**
 	 * Packet streaming layer.
 	 */
-	private SyncState   joggSyncState   = new SyncState();
+	private SyncState joggSyncState = new SyncState();
+
 	/**
 	 * Internal data storage.
 	 */
-	private DspState    jorbisDspState  = new DspState();
+	private DspState jorbisDspState = new DspState();
+
 	/**
 	 * Block of stored JOrbis data.
 	 */
-	private Block       jorbisBlock     = new Block(jorbisDspState);
+	private Block jorbisBlock = new Block(jorbisDspState);
+
 	/**
 	 * Comment fields.
 	 */
-	private Comment     jorbisComment   = new Comment();
+	private Comment jorbisComment = new Comment();
+
 	/**
 	 * Info about the data.
 	 */
-	private Info        jorbisInfo      = new Info();
+	private Info jorbisInfo = new Info();
 
 	/**
 	 * Processes status messages, warnings, and error messages.
@@ -385,19 +393,19 @@ public class CodecJOrbis implements ICodec {
 		try {
 			urlConnection = url.openConnection();
 		} catch (IOException e) {
-			errorMessage("Unable to create a UrlConnection in method " + "'initialize'.");
+			errorMessage("Unable to create a UrlConnection in method 'initialize'.");
 			printStackTrace(e);
 			cleanup();
 			return false;
 		}
+
 		if (urlConnection != null) {
 			try {
-				inputStream = urlConnection.getInputStream();
-			} catch (IOException ioe) {
-				errorMessage("Unable to acquire input stream in method " + "'initialize'.");
-				printStackTrace(ioe);
+				inputStream = openInputStream();
+			} catch (IOException e) {
+				errorMessage("Unable to acquire input stream in method 'initialize'.");
+				printStackTrace(e);
 				cleanup();
-				return false;
 			}
 		}
 
@@ -432,6 +440,13 @@ public class CodecJOrbis implements ICodec {
 		initialized(SET, true);
 
 		return true;
+	}
+
+	/**
+	 * "Augmented" method used by overriding classes.
+	 */
+	protected InputStream openInputStream() throws IOException {
+		return urlConnection.getInputStream();
 	}
 
 	/**
@@ -555,17 +570,17 @@ public class CodecJOrbis implements ICodec {
 		jorbisInfo.init();
 		jorbisComment.init();
 		if (joggStreamState.pagein(joggPage) < 0) {
-			errorMessage("Problem with first Ogg header page in method " + "'readHeader'.");
+			errorMessage("Problem with first Ogg header page in method 'readHeader'.");
 			return false;
 		}
 
 		if (joggStreamState.packetout(joggPacket) != 1) {
-			errorMessage("Problem with first Ogg header packet in method " + "'readHeader'.");
+			errorMessage("Problem with first Ogg header packet in method 'readHeader'.");
 			return false;
 		}
 
 		if (jorbisInfo.synthesis_headerin(jorbisComment, joggPacket) < 0) {
-			errorMessage("File does not contain Vorbis header in method " + "'readHeader'.");
+			errorMessage("File does not contain Vorbis header in method 'readHeader'.");
 			return false;
 		}
 
@@ -581,7 +596,7 @@ public class CodecJOrbis implements ICodec {
 						if (result == 0) break;
 
 						if (result == -1) {
-							errorMessage("Secondary Ogg header corrupt in " + "method 'readHeader'.");
+							errorMessage("Secondary Ogg header corrupt in method 'readHeader'.");
 							return false;
 						}
 
@@ -594,7 +609,7 @@ public class CodecJOrbis implements ICodec {
 			bytes = inputStream.read(joggSyncState.data, index, bufferSize);
 			if (bytes < 0) bytes = 0;
 			if (bytes == 0 && i < 2) {
-				errorMessage("End of file reached before finished reading" + "Ogg header in method 'readHeader'");
+				errorMessage("End of file reached before finished reading OGG header in method 'readHeader'");
 				return false;
 			}
 
@@ -715,13 +730,13 @@ public class CodecJOrbis implements ICodec {
 	}
 
 	/**
-	 * Trims down the size of the array if it is larger than the specified
-	 * maximum length.
+	 * Trims down the size of the array if it is larger than the specified maximum length.
 	 *
 	 * @param array     Array containing audio data.
 	 * @param maxLength Maximum size this array may be.
 	 * @return New array.
 	 */
+	@SuppressWarnings("unused")
 	private static byte[] trimArray(byte[] array, int maxLength) {
 		byte[] trimmedArray = null;
 		if (array != null && array.length > maxLength) {
@@ -811,7 +826,7 @@ public class CodecJOrbis implements ICodec {
 	 *
 	 * @param message Message to print.
 	 */
-	private void errorMessage(String message) {
+	protected void errorMessage(String message) {
 		logger.errorMessage("CodecJOrbis", message, 0);
 	}
 
@@ -820,7 +835,7 @@ public class CodecJOrbis implements ICodec {
 	 *
 	 * @param e Exception containing the information to print.
 	 */
-	private void printStackTrace(Exception e) {
+	protected void printStackTrace(Exception e) {
 		logger.printStackTrace(e, 1);
 	}
 }
