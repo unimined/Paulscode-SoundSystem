@@ -199,6 +199,11 @@ val jSpeexPlugin: SourceSet by sourceSets.libExtending("CodecJSpeex", main)
 val jlayerMP3Plugin: SourceSet by sourceSets.libExtending("CodecJLayerMP3", main)
 
 /**
+ * JOrbis extension MUS codec
+ */
+val musPlugin: SourceSet by sourceSets.libExtending("CodecMus", main, jOrbisPlugin)
+
+/**
  * jPCT-friendly version of the SoundSystem
  */
 val jpct: SourceSet by sourceSets.libExtending("SoundSystem-jPCT", main, javaSoundPlugin, lwjgl2Plugin, joggPlugin, wavPlugin) {
