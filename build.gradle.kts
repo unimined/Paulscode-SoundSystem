@@ -36,7 +36,7 @@ fun SourceSet.extendsFrom(sourceSet: SourceSet, name: String) {
         }
     }
     dependencies {
-        this@extendsFrom.apiConfigurationName("com.paulscode:$name:1.0.0")
+        this@extendsFrom.apiConfigurationName("com.paulscode:$name:$version")
     }
 //    compileClasspath += sourceSet.compileClasspath
 //    runtimeClasspath += sourceSet.runtimeClasspath
