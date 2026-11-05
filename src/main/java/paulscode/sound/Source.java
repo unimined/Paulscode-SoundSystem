@@ -158,6 +158,15 @@ public class Source {
 	public boolean removed = false;
 
 	/**
+	 * Per-source byte-order flag — binary compatibility with the variant
+	 * bundled inside Mojang's b1.7.3 jar, whose {@code Source} subclasses
+	 * (e.g. BTA's {@code SourceLWJGL3OpenAL}) write this field from the
+	 * codec's {@link ICodec#reverseByteOrder(boolean)} report. Consulted
+	 * by {@link #reverseByteOrder()}.
+	 */
+	protected boolean reverseByteOrder = false;
+
+	/**
 	 * This value represents the source's pitch (float value between 0.5f - 2.0f).
 	 */
 	protected float pitch = 1.0f;
@@ -755,7 +764,7 @@ public class Source {
 	 * @return True if audio data should be reverse-ordered.
 	 */
 	public boolean reverseByteOrder() {
-		return SoundSystemConfig.reverseByteOrder(libraryType);
+		return reverseByteOrder || SoundSystemConfig.reverseByteOrder(libraryType);
 	}
 
 	/**
